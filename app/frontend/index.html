@@ -12,328 +12,14 @@
     <script src="https://d3js.org/d3.v5.min.js" type="text/javascript"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="js/load.js"></script>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <script>
-      $( document ).ready(function() {
-        //------------------------1. PREPARATION------------------------//
-        //-----------------------------SVG------------------------------//
-        var width = 960;
-        var height = 500;
-        const margin = 5;
-        const padding = 5;
-        const adj = 30;
-        // we are appending SVG first
-        const svg = d3.select("div#container").append("svg")
-                .attr("preserveAspectRatio", "xMinYMin meet")
-                .attr("viewBox", "-"
-                        + adj + " -"
-                        + adj + " "
-                        + (width + adj * 3) + " "
-                        + (height + adj * 3))
-                .style("padding", padding)
-                .style("margin", margin)
-                .classed("svg-content", true);
-
-        //-----------------------------DATA-----------------------------//
-        const timeConv = d3.timeParse("%d-%b-%Y");
-        const dataset = d3.csv("data.csv");
-        dataset.then(function (data) {
-          var slices = data.columns.slice(1).map(function (id) {
-            return {
-              id: id,
-              values: data.map(function (d) {
-                return {
-                  date: timeConv(d.date),
-                  measurement: +d[id]
-                };
-              })
-            };
-          });
-//----------------------------SCALES----------------------------//
-          const xScale = d3.scaleTime().range([0, width]);
-          const yScale = d3.scaleLinear().rangeRound([height, 0]);
-          xScale.domain(d3.extent(data, function (d) {
-            return timeConv(d.date)
-          }));
-          yScale.domain([(0), d3.max(slices, function (c) {
-            return d3.max(c.values, function (d) {
-              return d.measurement + 4;
-            });
-          })
-          ]);
-
-//-----------------------------AXES-----------------------------//
-          const yaxis = d3.axisLeft()
-                  .ticks((slices[0].values).length)
-                  .scale(yScale);
-
-          const xaxis = d3.axisBottom()
-                  .ticks(d3.timeDay.every(1))
-                  .tickFormat(d3.timeFormat('%b %d'))
-                  .scale(xScale);
-
-//----------------------------LINES-----------------------------//
-          const line = d3.line()
-                  .x(function (d) {
-                    return xScale(d.date);
-                  })
-                  .y(function (d) {
-                    return yScale(d.measurement);
-                  });
-
-          let id = 0;
-          const ids = function () {
-            return "line-" + id++;
-          }
-//-------------------------2. DRAWING---------------------------//
-//-----------------------------AXES-----------------------------//
-          svg.append("g")
-                  .attr("class", "axis")
-                  .attr("transform", "translate(0," + height + ")")
-                  .call(xaxis);
-
-          svg.append("g")
-                  .attr("class", "axis")
-                  .call(yaxis)
-                  .append("text")
-                  .attr("transform", "rotate(-90)")
-                  .attr("dy", ".75em")
-                  .attr("y", 6)
-                  .style("text-anchor", "end")
-                  .text("Veränderungen");
-
-//----------------------------LINES-----------------------------//
-          const lines = svg.selectAll("lines")
-                  .data(slices)
-                  .enter()
-                  .append("g");
-
-          lines.append("path")
-                  .attr("class", ids)
-                  .attr("d", function (d) {
-                    return line(d.values);
-                  });
-
-          lines.append("text")
-                  .attr("class", "serie_label")
-                  .datum(function (d) {
-                    return {
-                      id: d.id,
-                      value: d.values[d.values.length - 1]
-                    };
-                  })
-                  .attr("transform", function (d) {
-                    return "translate(" + (xScale(d.value.date) + 10)
-                            + "," + (yScale(d.value.measurement) + 5) + ")";
-                  })
-                  .attr("x", 5)
-                  .text(function (d) {
-                    return ("Serie ") + d.id;
-                  });
-
-        });
-
-        /** pie chart part **/
-        var data = d3.range(5).map(Math.random).sort(d3.descending);
-
-        var svg1 = d3.select("#svg1"),
-                width = svg1.attr("width"),
-                height = svg1.attr("height") - 40,
-                radius = Math.min(width, height) / 2;
-        var g = svg1.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-        var title = svg1.append('text')
-                .attr('class', 'title')
-                .attr('x', width / 2)
-                .attr('y', 400)
-                .attr('text-anchor', 'middle')
-                .text('Erreichbarkeit 24h');
-
-
-        var color = d3.scaleOrdinal(['#4daf4a','#377eb8','#ff7f00','#984ea3','#e41a1c']);
-
-        // Generate the pie
-        var pie = d3.pie();
-
-        // Generate the arcs
-        var arc = d3.arc()
-                .innerRadius(0)
-                .outerRadius(radius);
-
-        //Generate groups
-        var arcs = g.selectAll("arc")
-                .data(pie(data))
-                .enter()
-                .append("g")
-                .attr("class", "arc")
-
-        //Draw arc paths
-        arcs.append("path")
-                .attr("fill", function(d, i) {
-                  return color(i);
-                })
-                .attr("d", arc);
-
-        // draw second pie chart
-        var svg2 = d3.select("#svg2")
-        var g2 = svg2.append("g")
-                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-        var title1 = svg2.append('text')
-                .attr('class', 'title')
-                .attr('x', width / 2)
-                .attr('y', 400)
-                .attr('text-anchor', 'middle')
-                .text('Ö!nungszeiten unbekannt');
-
-        // Create dummy data
-                var data = {a: Math.floor(Math.random()*Math.random()*100), b: Math.floor(Math.random()*Math.random()*100), c:Math.floor(Math.random()*Math.random()*100), d:Math.floor(Math.random()*Math.random()*100), e:Math.floor(Math.random()*Math.random()*100)}
-
-        // set the color scale
-                var color = d3.scaleOrdinal()
-                        .domain(data)
-                        .range(d3.schemeSet2);
-
-        // Compute the position of each group on the pie:
-                var pie = d3.pie()
-                        .value(function(d) {return d.value; })
-                var data_ready = pie(d3.entries(data))
-        // Now I know that group A goes from 0 degrees to x degrees and so on.
-
-        // shape helper to build arcs:
-                var arcGenerator = d3.arc()
-                        .innerRadius(0)
-                        .outerRadius(radius)
-
-
-
-
-        // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
-        g2.selectAll('mySlices')
-            .data(data_ready)
-            .enter()
-            .append('path')
-            .attr('d', arcGenerator)
-            .attr('fill', function(d){ return(color(d.data.key)) })
-            .attr("stroke", "black")
-            .style("stroke-width", "2px")
-            .style("opacity", 0.7)
-
-        // Now add the annotation. Use the centroid method to get the best coordinates
-        g2.selectAll('mySlices')
-            .data(data_ready)
-            .enter()
-            .append('text')
-            .text(function(d){ return d.data.key})
-            .attr("transform", function(d) { return "translate(" + arcGenerator.centroid(d) + ")";  })
-            .style("text-anchor", "middle")
-            .style("font-size", 17)
-
-      });
-
-      /**
-       * change theme function
-       */
-      function changeTheme(e){
-        theme_id = document.getElementById("chg-theme").value;
-        if (theme_id == 1){
-          document.body.className = document.body.className.replace("bg-white","bg-dark");
-          var elementArray = document.getElementsByClassName("text-dark");
-          while (elementArray.length) {
-            elementArray[0].className = elementArray[0].className.replace("text-dark","text-white");
-          }
-        }
-        else{
-          document.body.className = document.body.className.replace("bg-dark","bg-white");
-          var elementArray = document.getElementsByClassName("text-white");
-          while (elementArray.length) {
-            elementArray[0].className = elementArray[0].className.replace("text-white","text-dark");
-          }
-
-        }
-
-      }
-    </script>
-    <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
-      }
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-
-      /* AXES */
-      /* ticks */
-      .axis line {
-        stroke: #706f6f;
-        stroke-width: 0.5;
-        shape-rendering: crispEdges;
-      }
-
-      /* axis contour */
-      .axis path {
-        stroke: #706f6f;
-        stroke-width: 0.7;
-        shape-rendering: crispEdges;
-      }
-
-      /* axis text */
-      .axis text {
-        fill: #2b2929;
-        font-family: Georgia;
-        font-size: 120%;
-      }
-
-      /* LINE CHART */
-      path.line-0 {
-        fill: none;
-        stroke: #ed3700;
-      }
-
-      path.line-1 {
-        fill: none;
-        stroke: #2b2929;
-        stroke-dasharray: 2;
-      }
-
-      path.line-2 {
-        fill: none;
-        stroke: #9c9c9c;
-        stroke-dasharray: 6;
-      }
-
-      .serie_label {
-        fill: #2b2929;
-        font-family: Georgia;
-        font-size: 80%;
-      }
-
-      .arc text {
-        font: 10px sans-serif;
-        text-anchor: middle;
-      }
-
-      .arc path {
-        stroke: #fff;
-      }
-
-      .title {
-        fill: teal;
-        font-weight: bold;
-      }
-
-    </style>
-
-    
+    <link href="css/style.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <!-- Custom styles for this template -->
     <link href="css/heroes.css" rel="stylesheet">
     <link href="css/features.css" rel="stylesheet">
@@ -346,10 +32,11 @@
       <div class="row">
         <div class="col-md-11"></div>
         <div class="col-md-1">
-          <select class="form-select" onchange="changeTheme()" id="chg-theme">
-            <option value="1" selected>Dark</option>
-            <option value="2">Light</option>
-          </select>
+          <!-- iOS Style: Rounded -->
+          <div class="material-switch pull-right">
+            <input id="someSwitchOptionPrimary" name="someSwitchOption001" type="checkbox" onclick="changeTheme(this)"/>
+            <label for="someSwitchOptionPrimary" class="label-primary"></label>
+          </div>
         </div>
       </div>
     </div>
@@ -364,14 +51,15 @@
 
     <div class="text-white px-4 py-5" id="featured-1">
       <h2 class=" pb-2 border-bottom">Defi Fakten</h2>
+
       <div class="row g-4 py-5 row-cols-1 row-cols-lg-2">
-        <div class="feature col">
+        <div class="feature col-md-6">
           <div class="text-blue">
             <h1 class="display-2 fw-bold text-blue-100">6322</h1>
           </div>
           <h2>Defis in der Schweiz</h2>
         </div>
-        <div class="feature col">
+        <div class="feature col-md-6">
           <div class="text-blue">
             <h1 class="display-2 fw-bold text-blue-100">456</h1>
           </div>
@@ -397,7 +85,7 @@
     <div class="text-white px-4 py-5" id="featured-2">
       <h2 class=" pb-2 border-bottom">Stetige Veränderung</h2>
 <!--      <p> Line Chart here</p>-->
-      <div class="svg-container" id="container"></div>
+      <div class="svg-container" id="container" style="text-align: center"></div>
     </div>
 
     <div class="text-white px-4 py-5" id="featured-3">
@@ -405,10 +93,10 @@
 <!--      <p>Pie Chart here</p>-->
       <div>
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-6" style="text-align: center">
             <svg width="500" height="400" id="svg1"></svg>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-6" style="text-align: center">
             <svg width="500" height="400" id="svg2"></svg>
           </div>
         </div>
