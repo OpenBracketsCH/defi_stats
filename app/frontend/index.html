@@ -4,9 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.88.1">
-    <title>Heroes · Bootstrap v5.1</title>
+    <meta name="author" content="Christian Nüssli">
+    <title>Defikarte.ch - Statistiken</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/heroes/">
 
@@ -35,11 +34,12 @@
     <!-- Custom styles for this template -->
     <link href="css/heroes.css" rel="stylesheet">
     <link href="css/features.css" rel="stylesheet">
+    <link href="css/footers.css" rel="stylesheet">
   </head>
-  <body>
+  <body class="bg-dark">
     
 <main>
-  <div class="bg-dark text-secondary px-4 py-5 text-center">
+  <div class="text-secondary px-4 py-5 text-center">
     <div class="py-5">
       <h1 class="display-2 fw-bold text-white">Defi Stats Switzerland</h1>
       <div class="col-lg-6 mx-auto">
@@ -48,47 +48,62 @@
     </div>
   </div>
 
-  <div class="bg-dark text-secondary px-4 py-5" id="custom-cards">
-    <div class="row row-cols-1 row-cols-lg-2 align-items-stretch g-4 py-5">
-      <div class="col">
-        <div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style="background-image: url('unsplash-photo-1.jpg');">
-          <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-            <h2 class="pt-5 mt-5 mb-4 display-8 lh-1 fw-bold">Defis in Switzerland</h2>
-          </div>
+  <div class="text-white px-4 py-5" id="featured-3">
+    <h2 class=" pb-2 border-bottom">Defi Fakten</h2>
+    <div class="row g-4 py-5 row-cols-1 row-cols-lg-2">
+      <div class="feature col">
+        <div class="text-blue">
+          <h1 class="display-2 fw-bold text-blue-100">6322</h1>
         </div>
+        <h2>Defis in der Schweiz</h2>
       </div>
-
-      <div class="col">
-        <div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style="background-image: url('unsplash-photo-2.jpg');">
-          <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-            <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Much longer title that wraps to multiple lines</h2>
-          </div>
+      <div class="feature col">
+        <div class="text-blue">
+          <h1 class="display-2 fw-bold text-blue-100">456</h1>
         </div>
+        <h2>Defis im gewählten Kanton</h2>
+      </div>
+    </div>
+    <div class="row g-4 py-5 row-cols-1 row-cols-lg-2">
+      <div class="feature col">
+        <div class="text-blue">
+          <h1 class="display-2 fw-bold text-blue-100">1144</h1>
+        </div>
+        <h2>24h erreichbar</h2>
+      </div>
+      <div class="feature col">
+        <div class="text-blue">
+          <h1 class="display-2 fw-bold text-blue-100">3</h1>
+        </div>
+        <h2>Dispogebiete</h2>
       </div>
     </div>
   </div>
 
-  <div class="bg-dark text-secondary px-4 py-5" id="custom-cards">
-    <div class="row row-cols-1 row-cols-lg-2 align-items-stretch g-4 py-5">
-      <div class="col">
-        <div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style="background-image: url('unsplash-photo-1.jpg');">
-          <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-            <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Defis in Switzerland</h2>
-          </div>
-        </div>
-      </div>
+  <div class="text-white px-4 py-5" id="featured-3">
+    <h2 class=" pb-2 border-bottom">Stetige Veränderung</h2>
+    <p> Line Chart here</p>
+  </div>
 
-      <div class="col">
-        <div class="card card-cover h-100 overflow-hidden text-white bg-dark rounded-5 shadow-lg" style="background-image: url('unsplash-photo-2.jpg');">
-          <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-            <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Much longer title that wraps to multiple lines</h2>
-          </div>
+  <div class="text-white px-4 py-5" id="featured-3">
+    <h2 class=" pb-2 border-bottom">Darstellungen</h2>
+    <p>Pie Chart here</p>
+  </div>
+
+  <div class="text-white">
+    <div class="container">
+      <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+        <div class="col-md-4 d-flex align-items-center">
+          <a href="/" class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1">
+            <svg class="bi" width="30" height="24"><use xlink:href="#bootstrap"/></svg>
+          </a>
+          <span class="text-muted">&copy; 2021 Defikarte.ch</span>
+          <span class="text-muted"> Github Repo</span>
         </div>
-      </div>
+      </footer>
     </div>
   </div>
 </main>
-
 
     <script src="js/bootstrap.bundle.min.js"></script>
 
