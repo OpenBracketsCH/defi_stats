@@ -12,10 +12,12 @@ $( document ).ready(function() {
         .attr("viewBox", "-"
             + adj + " -"
             + adj + " "
-            + (width + adj * 3) + " "
-            + (height + adj * 3))
+            + (width) + " "
+            + (height))
         .style("padding", padding)
         .style("margin", margin)
+        .style("width", 700)
+        .style("height", 500)
         .classed("svg-content", true);
 
     //-----------------------------DATA-----------------------------//
