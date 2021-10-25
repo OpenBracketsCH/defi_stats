@@ -162,20 +162,20 @@ body{margin-top:20px;}
     font-size: 14px;
     margin-bottom: 0px;
 }
-.card-big-shadow:before {
-    background-image: url("http://static.tumblr.com/i21wc39/coTmrkw40/shadow.png");
-    background-position: center bottom;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    bottom: -12%;
-    content: "";
-    display: block;
-    left: -12%;
-    position: absolute;
-    right: 0;
-    top: 0;
-    z-index: 0;
-}
+/*.card-big-shadow:before {*/
+/*    background-image: url("http://static.tumblr.com/i21wc39/coTmrkw40/shadow.png");*/
+/*    background-position: center bottom;*/
+/*    background-repeat: no-repeat;*/
+/*    background-size: 100% 100%;*/
+/*    bottom: -12%;*/
+/*    content: "";*/
+/*    display: block;*/
+/*    left: -12%;*/
+/*    position: absolute;*/
+/*    right: 0;*/
+/*    top: 0;*/
+/*    z-index: 0;*/
+/*}*/
 h4, .h4 {
     font-size: 1.5em;
     font-weight: 600;
@@ -210,13 +210,19 @@ a:hover, a:focus {
 .card[data-color="dark"] .category {
     color: #F8F8F8;
 }
+.card[data-color="dark"] .title {
+    color: #FFFFFF;
+}
 
 .card[data-color="white"] {
     background: #ffe28c;
 }
+.card[data-color="white"] .title {
+    color: #212520;
+}
 .card[data-color="white"] .description {
-    color: #b25825;
+    color: #212520;
 }
 .card[data-color="white"] .category {
-    color: #d88715;
+    color: #212520;
 }

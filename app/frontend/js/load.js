@@ -220,18 +220,29 @@ $( document ).ready(function() {
  * change theme function
  */
 function changeTheme(checkbox){
+
+    let cardArray = document.getElementsByClassName("card-just-text");
     if (!checkbox.checked){
         document.body.className = document.body.className.replace("bg-white","bg-dark");
-        var elementArray = document.getElementsByClassName("text-dark");
+        let elementArray = document.getElementsByClassName("text-dark");
         while (elementArray.length) {
             elementArray[0].className = elementArray[0].className.replace("text-dark","text-white");
+        }
+
+        for (let id=0; id< cardArray.length; id++)
+        {
+            cardArray[id].dataset.color = "dark";
         }
     }
     else{
         document.body.className = document.body.className.replace("bg-dark","bg-white");
-        var elementArray = document.getElementsByClassName("text-white");
+        let elementArray = document.getElementsByClassName("text-white");
         while (elementArray.length) {
             elementArray[0].className = elementArray[0].className.replace("text-white","text-dark");
+        }
+        for (let id=0; id< cardArray.length; id++)
+        {
+            cardArray[id].dataset.color = "white";
         }
 
     }
