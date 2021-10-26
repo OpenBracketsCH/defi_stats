@@ -1,157 +1,225 @@
-<!doctype html>
-<html lang="en">
-  <head>
+<!DOCTYPE html>
+<html>
+  <head> 
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Defi Stats Switzerland</title>
     <meta name="description" content="">
-    <meta name="author" content="Christian Nüssli">
-    <title>Defikarte.ch - Statistiken</title>
-
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/heroes/">
-    <script src="js/bootstrap.bundle.min.js"></script>
-    <script src="https://d3js.org/d3.v5.min.js" type="text/javascript"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script src="js/load.js"></script>
-
-    <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <!-- Custom styles for this template -->
-    <link href="css/heroes.css" rel="stylesheet">
-    <link href="css/features.css" rel="stylesheet">
-    <link href="css/footers.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="all,follow">
+    <!-- Choices.js-->
+    <link rel="stylesheet" href="vendor/choices.js/public/assets/styles/choices.min.css">
+    <!-- Google fonts - Muli-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli:300,400,700">
+    <!-- theme stylesheet-->
+    <link rel="stylesheet" href="css/style.default.css" id="theme-stylesheet">
+    <!-- Custom stylesheet - for your changes-->
+    <link rel="stylesheet" href="css/custom.css">
+    <!-- Favicon-->
+    <link rel="shortcut icon" href="img/favicon.ico">
+    <!-- Tweaks for older IEs--><!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
   </head>
-  <body class="bg-dark">
-
-  <main>
-    <div>
-      <div class="row">
-        <div class="col-md-11"></div>
-        <div class="col-md-1">
-          <!-- iOS Style: Rounded -->
-          <div class="material-switch pull-right">
-            <input id="someSwitchOptionPrimary" name="someSwitchOption001" type="checkbox" onclick="changeTheme(this)"/>
-            <label for="someSwitchOptionPrimary" class="label-primary"></label>
+  <body>
+    <div class="d-flex align-items-stretch">
+      <div class="page-content">
+        <!-- Page Header-->
+        <div class="bg-dash-dark-2 py-4">
+          <div class="container-fluid text-center">
+            <h2 class="h5 mb-0">Defi Stats Switzerland</h2>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="text-secondary px-4 py-5 text-center">
-      <div class="py-5">
-        <h1 class="display-2 fw-bold text-white">Defi Stats Switzerland</h1>
-        <div class="col-lg-6 mx-auto">
-          <p class="fs-5 mb-4">Bla</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="text-white px-4 py-5" id="featured-1">
-      <h2 class=" pb-2 border-bottom">Defi Fakten</h2>
-<!--   card   -->
-      <div class="container bootstrap snippets bootdeys">
-        <div class="row">
-          <div class="col-md-6 col-sm-6 content-card">
-            <div class="card-big-shadow">
-              <div class="card card-just-text" data-background="color" data-color="dark" data-radius="none">
-                <div class="content">
-                  <h6 class="category">Defis in der Schweiz</h6>
-                  <h4 class="title">Defis in der Schweiz</h4>
-                  <p class="description">6322</p>
+        <section>
+          <div class="container-fluid">
+            <div class="row gy-4">
+              <div class="col-md-3 col-sm-6">
+                <div class="card mb-0">
+                  <div class="card-body">
+                    <div class="d-flex align-items-end justify-content-between mb-2">
+                      <div class="me-2">
+                            <svg class="svg-icon svg-icon-sm svg-icon-heavy text-gray-600 mb-2">
+                              <use xlink:href="#user-1"> </use>
+                            </svg>
+                        <p class="text-sm text-uppercase text-gray-600 lh-1 mb-0">Defis in der Schweiz</p>
+                      </div>
+                      <p class="text-xxl lh-1 mb-0 text-dash-color-1">27</p>
+                    </div>
+                    <div class="progress" style="height: 3px">
+                      <div class="progress-bar bg-dash-color-1" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
                 </div>
-              </div> <!-- end card -->
+              </div>
+              <div class="col-md-3 col-sm-6">
+                <div class="card mb-0">
+                  <div class="card-body">
+                    <div class="d-flex align-items-end justify-content-between mb-2">
+                      <div class="me-2">
+                            <svg class="svg-icon svg-icon-sm svg-icon-heavy text-gray-600 mb-2">
+                              <use xlink:href="#stack-1"> </use>
+                            </svg>
+                        <p class="text-sm text-uppercase text-gray-600 lh-1 mb-0">Defis im gewählten Kanton</p>
+                      </div>
+                      <p class="text-xxl lh-1 mb-0 text-dash-color-2">375</p>
+                    </div>
+                    <div class="progress" style="height: 3px">
+                      <div class="progress-bar bg-dash-color-2" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3 col-sm-6">
+                <div class="card mb-0">
+                  <div class="card-body">
+                    <div class="d-flex align-items-end justify-content-between mb-2">
+                      <div class="me-2">
+                            <svg class="svg-icon svg-icon-sm svg-icon-heavy text-gray-600 mb-2">
+                              <use xlink:href="#survey-1"> </use>
+                            </svg>
+                        <p class="text-sm text-uppercase text-gray-600 lh-1 mb-0">24h erreichbar</p>
+                      </div>
+                      <p class="text-xxl lh-1 mb-0 text-dash-color-3">140</p>
+                    </div>
+                    <div class="progress" style="height: 3px">
+                      <div class="progress-bar bg-dash-color-3" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3 col-sm-6">
+                <div class="card mb-0">
+                  <div class="card-body">
+                    <div class="d-flex align-items-end justify-content-between mb-2">
+                      <div class="me-2">
+                            <svg class="svg-icon svg-icon-sm svg-icon-heavy text-gray-600 mb-2">
+                              <use xlink:href="#paper-stack-1"> </use>
+                            </svg>
+                        <p class="text-sm text-uppercase text-gray-600 lh-1 mb-0">Dispogebiete</p>
+                      </div>
+                      <p class="text-xxl lh-1 mb-0 text-dash-color-4">41</p>
+                    </div>
+                    <div class="progress" style="height: 3px">
+                      <div class="progress-bar bg-dash-color-4" role="progressbar" style="width: 35%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-
-          <div class="col-md-6 col-sm-6 content-card">
-            <div class="card-big-shadow">
-              <div class="card card-just-text" data-background="color" data-color="dark" data-radius="none">
-                <div class="content">
-                  <h6 class="category">Defis im gewählten Kanton</h6>
-                  <h4 class="title">Defis im gewählten Kanton</h4>
-                  <p class="description">456</p>
+        </section>
+        <section class="pt-0">
+          <div class="container-fluid">
+            <div class="row gy-4">
+              <div class="col-lg-4">
+                <div class="card">
+                  <div class="card-body">
+                    <canvas id="barChartExample1"></canvas>
+                  </div>
                 </div>
-              </div> <!-- end card -->
+                <div class="card">
+                  <div class="card-body">
+                    <canvas id="barChartExample2"></canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-8">
+                <div class="card">
+                  <div class="card-body">
+                    <strong>Stetige Veränderung</strong>
+                    <canvas id="lineChart"></canvas>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6 col-sm-6 content-card">
-            <div class="card-big-shadow">
-              <div class="card card-just-text" data-background="color" data-color="dark" data-radius="none">
-                <div class="content">
-                  <h6 class="category">24h erreichbar</h6>
-                  <h4 class="title">24h erreichbar</h4>
-                  <p class="description">2144</p>
+        </section>
+        <section class="pt-0">
+          <div class="container-fluid">
+            <div class="row gy-4">
+              <div class="col-lg-4">
+                <div class="card">
+                  <div class="card-body">
+                    <h3 class="h4 mb-0">Erreichbarkeit 24h</h3>
+                    <p class="text-sm fw-light mb-5">Erreichbarkeit 24h</p>
+                    <div class="position-relative text-center">
+                      <canvas id="pieChartHome1"></canvas>
+                      <div class="position-absolute top-50 start-50 translate-middle"><strong class="text-lg d-block">2.145</strong><span class="d-block"></span></div>
+                    </div>
+                  </div>
                 </div>
-              </div> <!-- end card -->
+              </div>
+              <div class="col-lg-4">
+                <div class="card">
+                  <div class="card-body">
+                    <h3 class="h4 mb-0">Ö!nungszeiten unbekannt</h3>
+                    <p class="text-sm fw-light mb-5">Ö!nungszeiten unbekannt</p>
+                    <div class="position-relative text-center">
+                      <canvas id="pieChartHome2"></canvas>
+                      <div class="position-absolute top-50 start-50 translate-middle"><strong class="text-lg d-block">7.784</strong><span class="d-block"></span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="card">
+                  <div class="card-body">
+                    <h3 class="h4 mb-0">Direct Sales</h3>
+                    <p class="text-sm fw-light mb-5">Lorem ipsum dolor sit</p>
+                    <div class="position-relative text-center">
+                      <canvas id="pieChartHome3"></canvas>
+                      <div class="position-absolute top-50 start-50 translate-middle"><strong class="text-lg d-block">4.957</strong><span class="d-block"></span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-
-          <div class="col-md-6 col-sm-6 content-card">
-            <div class="card-big-shadow">
-              <div class="card card-just-text" data-background="color" data-color="dark" data-radius="none">
-                <div class="content">
-                  <h6 class="category">Dispogebiete</h6>
-                  <h4 class="title">Dispogebiete</h4>
-                  <p class="description">14</p>
-                </div>
-              </div> <!-- end card -->
-            </div>
+        </section>
+        <!-- Page Footer-->
+        <footer class="position-absolute bottom-0 bg-dash-dark-2 text-white text-center py-3 w-100 text-xs" id="footer">
+          <div class="container-fluid text-center">
+            <!-- Please do not remove the backlink to us unless you support us at https://bootstrapious.com/donate. It is part of the license conditions. Thank you for understanding :)-->
+            <p class="mb-0 text-dash-gray">2021 &copy; Defikarte.ch.</p>
           </div>
-        </div>
-      </div>
-<!--      card end-->
-
-    </div>
-
-    <div class="text-white px-4 py-5" id="featured-2">
-      <h2 class=" pb-2 border-bottom">Stetige Veränderung</h2>
-<!--      <p> Line Chart here</p>-->
-      <div class="svg-container" id="container" style="text-align: center"></div>
-    </div>
-
-    <div class="text-white px-4 py-5" id="featured-3">
-      <h2 class=" pb-2 border-bottom">Darstellungen</h2>
-<!--      <p>Pie Chart here</p>-->
-      <div>
-        <div class="row">
-          <div class="col-md-6" style="text-align: center">
-            <svg width="500" height="400" id="svg1"></svg>
-          </div>
-          <div class="col-md-6" style="text-align: center">
-            <svg width="500" height="400" id="svg2"></svg>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="text-white">
-      <div class="container">
-        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-          <div class="col-md-4 d-flex align-items-center">
-            <a href="/" class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1">
-              <svg class="bi" width="30" height="24"><use xlink:href="#bootstrap"/></svg>
-            </a>
-            <span class="text-muted">&copy; 2021 Defikarte.ch</span>
-          </div>
-
-          <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
-            <li class="ms-3"><a class="text-muted" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#twitter"/></svg></a></li>
-            <li class="ms-3"><a class="text-muted" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#instagram"/></svg></a></li>
-            <li class="ms-3"><a class="text-muted" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#facebook"/></svg></a></li>
-          </ul>
         </footer>
       </div>
     </div>
-  </main>
-
-
-
-
-
+    <!-- JavaScript files-->
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="vendor/just-validate/js/just-validate.min.js"></script>
+    <script src="vendor/chart.js/Chart.min.js"></script>
+    <script src="vendor/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script src="js/charts-home.js"></script>
+    <!-- Main File-->
+    <script src="js/front.js"></script>
+    <script>
+      // ------------------------------------------------------- //
+      //   Inject SVG Sprite - 
+      //   see more here 
+      //   https://css-tricks.com/ajaxing-svg-sprite/
+      // ------------------------------------------------------ //
+      function injectSvgSprite(path) {
+      
+          var ajax = new XMLHttpRequest();
+          ajax.open("GET", path, true);
+          ajax.send();
+          ajax.onload = function(e) {
+          var div = document.createElement("div");
+          div.className = 'd-none';
+          div.innerHTML = ajax.responseText;
+          document.body.insertBefore(div, document.body.childNodes[0]);
+          }
+      }
+      // this is set to BootstrapTemple website as you cannot 
+      // inject local SVG sprite (using only 'icons/orion-svg-sprite.svg' path)
+      // while using file:// protocol
+      // pls don't forget to change to your domain :)
+      injectSvgSprite('https://bootstraptemple.com/files/icons/orion-svg-sprite.svg'); 
+      
+      
+    </script>
+    <!-- FontAwesome CSS - loading as last, so it doesn't block rendering-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
   </body>
 </html>
