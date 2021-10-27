@@ -1,7 +1,8 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", function () {
-    let base_url = "https://defistatsbackend.azurewebsites.net/"
+    let base_url = "https://defistatsbackend.azurewebsites.net/";
+    // let base_url = "http://localhost:5000/";
     // ------------------------------------------------------- //
     // Set All Defis Data
     // ------------------------------------------------------ //
@@ -34,6 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const LINECHART = document.getElementById("lineChart");
+    console.log(response);
     var homeLineChart = new Chart(LINECHART, {
         type: "line",
         options: {
@@ -49,8 +51,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 yAxes: [
                     {
                         ticks: {
-                            max: 60,
-                            min: 10,
+                            max: 10000,
+                            min: 6000,
                         },
                         display: true,
                         gridLines: {
@@ -64,10 +66,10 @@ document.addEventListener("DOMContentLoaded", function () {
             },
         },
         data: {
-            labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+            labels: response["line_data"]["label"],
             datasets: [
                 {
-                    label: "Page Visitors",
+                    label: "Count",
                     fill: true,
                     lineTension: 0.2,
                     backgroundColor: "transparent",
@@ -86,32 +88,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     pointHoverBorderWidth: 2,
                     pointRadius: 1,
                     pointHitRadius: 0,
-                    data: [20, 27, 20, 35, 30, 40, 33, 25, 39],
+                    data: response["line_data"]["data"],
                     spanGaps: false,
-                },
-                {
-                    label: "Page Views",
-                    fill: true,
-                    lineTension: 0.2,
-                    backgroundColor: "transparent",
-                    borderColor: "#EF8C99",
-                    pointBorderColor: "#EF8C99",
-                    pointHoverBackgroundColor: "#EF8C99",
-                    borderCapStyle: "butt",
-                    borderDash: [],
-                    borderDashOffset: 0.0,
-                    borderJoinStyle: "miter",
-                    borderWidth: 2,
-                    pointBackgroundColor: "#fff",
-                    pointBorderWidth: 5,
-                    pointHoverRadius: 5,
-                    pointHoverBorderColor: "#fff",
-                    pointHoverBorderWidth: 2,
-                    pointRadius: 1,
-                    pointHitRadius: 10,
-                    data: [25, 17, 28, 25, 33, 27, 30, 33, 27],
-                    spanGaps: false,
-                },
+                }
             ],
         },
     });
