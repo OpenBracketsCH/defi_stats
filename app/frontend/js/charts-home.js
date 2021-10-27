@@ -1,6 +1,28 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", function () {
+    let base_url = "https://defistatsbackend.azurewebsites.net/"
+    // ------------------------------------------------------- //
+    // Set All Defis Data
+    // ------------------------------------------------------ //
+
+    var response = '';
+    $.ajax({ type: "GET",
+        url: base_url + "api",
+        async : false,
+        success : function(data)
+        {
+            // response = JSON.parse(data);
+            response = data
+            $("#show_defi").text(response["all"]);
+            $("#show_hours").text(response["hours"]);
+            $("#show_dispo").text(response["dispo"]);
+            $("#region_data").text(response["bar_data"]["data"][0]);
+            $("#pie_opening").html('<strong class="text-lg d-block">' + response["pie_data"]["open_24"] + '</strong>');
+            $("#pie_unknown").html('<strong class="text-lg d-block">' + response["pie_data"]["unknown"] + '</strong>');
+        }
+    });
+
     Chart.defaults.global.defaultFontColor = "#75787c";
 
     // ------------------------------------------------------- //
@@ -98,6 +120,10 @@ document.addEventListener("DOMContentLoaded", function () {
     // Bar Chart
     // ------------------------------------------------------ //
     const BARCHARTEXMPLE1 = document.getElementById("barChartExample1");
+    let color_arr = []
+    for (var idx=0; idx < response["bar_data"]["label"].length; idx++){
+        color_arr.push("rgba(134, 77, 217, 0.57)");
+    }
     var barChartExample = new Chart(BARCHARTEXMPLE1, {
         type: "bar",
         options: {
@@ -121,72 +147,48 @@ document.addEventListener("DOMContentLoaded", function () {
             },
         },
         data: {
-            labels: ["January", "February", "March", "April", "May", "June", "July"],
+            labels: response["bar_data"]["label"],
             datasets: [
                 {
-                    label: "Data Set 1",
-                    backgroundColor: [
-                        "rgba(134, 77, 217, 0.57)",
-                        "rgba(134, 77, 217, 0.57)",
-                        "rgba(134, 77, 217, 0.57)",
-                        "rgba(134, 77, 217, 0.57)",
-                        "rgba(134, 77, 217, 0.57)",
-                        "rgba(134, 77, 217, 0.57)",
-                        "rgba(134, 77, 217, 0.57)",
-                    ],
-                    hoverBackgroundColor: [
-                        "rgba(134, 77, 217, 0.57)",
-                        "rgba(134, 77, 217, 0.57)",
-                        "rgba(134, 77, 217, 0.57)",
-                        "rgba(134, 77, 217, 0.57)",
-                        "rgba(134, 77, 217, 0.57)",
-                        "rgba(134, 77, 217, 0.57)",
-                        "rgba(134, 77, 217, 0.57)",
-                    ],
-                    borderColor: [
-                        "rgba(134, 77, 217, 1)",
-                        "rgba(134, 77, 217, 1)",
-                        "rgba(134, 77, 217, 1)",
-                        "rgba(134, 77, 217, 1)",
-                        "rgba(134, 77, 217, 1)",
-                        "rgba(134, 77, 217, 1)",
-                        "rgba(134, 77, 217, 1)",
-                    ],
+                    label: "count",
+                    backgroundColor: color_arr,
+                    hoverBackgroundColor: color_arr,
+                    borderColor: color_arr,
                     borderWidth: 1,
-                    data: [65, 59, 80, 81, 56, 55, 40],
+                    data: response["bar_data"]["data"],
                 },
-                {
-                    label: "Data Set 2",
-                    backgroundColor: [
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                    ],
-                    hoverBackgroundColor: [
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                    ],
-                    borderColor: [
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                    ],
-                    borderWidth: 1,
-                    data: [35, 40, 60, 47, 88, 27, 30],
-                },
+                // {
+                //     label: "Data Set 2",
+                //     backgroundColor: [
+                //         "rgba(75, 75, 75, 0.7)",
+                //         "rgba(75, 75, 75, 0.7)",
+                //         "rgba(75, 75, 75, 0.7)",
+                //         "rgba(75, 75, 75, 0.7)",
+                //         "rgba(75, 75, 75, 0.7)",
+                //         "rgba(75, 75, 75, 0.7)",
+                //         "rgba(75, 75, 75, 0.7)",
+                //     ],
+                //     hoverBackgroundColor: [
+                //         "rgba(75, 75, 75, 0.7)",
+                //         "rgba(75, 75, 75, 0.7)",
+                //         "rgba(75, 75, 75, 0.7)",
+                //         "rgba(75, 75, 75, 0.7)",
+                //         "rgba(75, 75, 75, 0.7)",
+                //         "rgba(75, 75, 75, 0.7)",
+                //         "rgba(75, 75, 75, 0.7)",
+                //     ],
+                //     borderColor: [
+                //         "rgba(75, 75, 75, 0.7)",
+                //         "rgba(75, 75, 75, 0.7)",
+                //         "rgba(75, 75, 75, 0.7)",
+                //         "rgba(75, 75, 75, 0.7)",
+                //         "rgba(75, 75, 75, 0.7)",
+                //         "rgba(75, 75, 75, 0.7)",
+                //         "rgba(75, 75, 75, 0.7)",
+                //     ],
+                //     borderWidth: 1,
+                //     data: [35, 40, 60, 47, 88, 27, 30],
+                // },
             ],
         },
     });
@@ -304,99 +306,99 @@ document.addEventListener("DOMContentLoaded", function () {
     // ------------------------------------------------------- //
     // Bar Chart
     // ------------------------------------------------------ //
-    const BARCHARTEXaMPLE2 = document.getElementById("barChartExample2");
-    var barChartExample = new Chart(BARCHARTEXaMPLE2, {
-        type: "bar",
-        options: {
-            scales: {
-                xAxes: [
-                    {
-                        display: false,
-                        gridLines: {
-                            color: "#eee",
-                        },
-                    },
-                ],
-                yAxes: [
-                    {
-                        display: false,
-                        gridLines: {
-                            color: "#eee",
-                        },
-                    },
-                ],
-            },
-        },
-        data: {
-            labels: ["January", "February", "March", "April", "May", "June", "July"],
-            datasets: [
-                {
-                    label: "Data Set 1",
-                    backgroundColor: [
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                    ],
-                    hoverBackgroundColor: [
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                    ],
-                    borderColor: [
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                        "rgba(75, 75, 75, 0.7)",
-                    ],
-                    borderWidth: 1,
-                    data: [65, 59, 80, 81, 56, 55, 40],
-                },
-                {
-                    label: "Data Set 2",
-                    backgroundColor: [
-                        "rgba(238, 139, 152, 0.7)",
-                        "rgba(238, 139, 152, 0.7)",
-                        "rgba(238, 139, 152, 0.7)",
-                        "rgba(238, 139, 152, 0.7)",
-                        "rgba(238, 139, 152, 0.7)",
-                        "rgba(238, 139, 152, 0.7)",
-                        "rgba(238, 139, 152, 0.7)",
-                    ],
-                    hoverBackgroundColor: [
-                        "rgba(238, 139, 152, 0.7)",
-                        "rgba(238, 139, 152, 0.7)",
-                        "rgba(238, 139, 152, 0.7)",
-                        "rgba(238, 139, 152, 0.7)",
-                        "rgba(238, 139, 152, 0.7)",
-                        "rgba(238, 139, 152, 0.7)",
-                        "rgba(238, 139, 152, 0.7)",
-                    ],
-                    borderColor: [
-                        "rgba(238, 139, 152, 1)",
-                        "rgba(238, 139, 152, 1)",
-                        "rgba(238, 139, 152, 1)",
-                        "rgba(238, 139, 152, 1)",
-                        "rgba(238, 139, 152, 1)",
-                        "rgba(238, 139, 152, 1)",
-                        "rgba(238, 139, 152, 1)",
-                    ],
-                    borderWidth: 1,
-                    data: [35, 40, 60, 47, 88, 27, 30],
-                },
-            ],
-        },
-    });
+    // const BARCHARTEXaMPLE2 = document.getElementById("barChartExample2");
+    // var barChartExample = new Chart(BARCHARTEXaMPLE2, {
+    //     type: "bar",
+    //     options: {
+    //         scales: {
+    //             xAxes: [
+    //                 {
+    //                     display: false,
+    //                     gridLines: {
+    //                         color: "#eee",
+    //                     },
+    //                 },
+    //             ],
+    //             yAxes: [
+    //                 {
+    //                     display: false,
+    //                     gridLines: {
+    //                         color: "#eee",
+    //                     },
+    //                 },
+    //             ],
+    //         },
+    //     },
+    //     data: {
+    //         labels: ["January", "February", "March", "April", "May", "June", "July"],
+    //         datasets: [
+    //             {
+    //                 label: "Data Set 1",
+    //                 backgroundColor: [
+    //                     "rgba(75, 75, 75, 0.7)",
+    //                     "rgba(75, 75, 75, 0.7)",
+    //                     "rgba(75, 75, 75, 0.7)",
+    //                     "rgba(75, 75, 75, 0.7)",
+    //                     "rgba(75, 75, 75, 0.7)",
+    //                     "rgba(75, 75, 75, 0.7)",
+    //                     "rgba(75, 75, 75, 0.7)",
+    //                 ],
+    //                 hoverBackgroundColor: [
+    //                     "rgba(75, 75, 75, 0.7)",
+    //                     "rgba(75, 75, 75, 0.7)",
+    //                     "rgba(75, 75, 75, 0.7)",
+    //                     "rgba(75, 75, 75, 0.7)",
+    //                     "rgba(75, 75, 75, 0.7)",
+    //                     "rgba(75, 75, 75, 0.7)",
+    //                     "rgba(75, 75, 75, 0.7)",
+    //                 ],
+    //                 borderColor: [
+    //                     "rgba(75, 75, 75, 0.7)",
+    //                     "rgba(75, 75, 75, 0.7)",
+    //                     "rgba(75, 75, 75, 0.7)",
+    //                     "rgba(75, 75, 75, 0.7)",
+    //                     "rgba(75, 75, 75, 0.7)",
+    //                     "rgba(75, 75, 75, 0.7)",
+    //                     "rgba(75, 75, 75, 0.7)",
+    //                 ],
+    //                 borderWidth: 1,
+    //                 data: [65, 59, 80, 81, 56, 55, 40],
+    //             },
+    //             {
+    //                 label: "Data Set 2",
+    //                 backgroundColor: [
+    //                     "rgba(238, 139, 152, 0.7)",
+    //                     "rgba(238, 139, 152, 0.7)",
+    //                     "rgba(238, 139, 152, 0.7)",
+    //                     "rgba(238, 139, 152, 0.7)",
+    //                     "rgba(238, 139, 152, 0.7)",
+    //                     "rgba(238, 139, 152, 0.7)",
+    //                     "rgba(238, 139, 152, 0.7)",
+    //                 ],
+    //                 hoverBackgroundColor: [
+    //                     "rgba(238, 139, 152, 0.7)",
+    //                     "rgba(238, 139, 152, 0.7)",
+    //                     "rgba(238, 139, 152, 0.7)",
+    //                     "rgba(238, 139, 152, 0.7)",
+    //                     "rgba(238, 139, 152, 0.7)",
+    //                     "rgba(238, 139, 152, 0.7)",
+    //                     "rgba(238, 139, 152, 0.7)",
+    //                 ],
+    //                 borderColor: [
+    //                     "rgba(238, 139, 152, 1)",
+    //                     "rgba(238, 139, 152, 1)",
+    //                     "rgba(238, 139, 152, 1)",
+    //                     "rgba(238, 139, 152, 1)",
+    //                     "rgba(238, 139, 152, 1)",
+    //                     "rgba(238, 139, 152, 1)",
+    //                     "rgba(238, 139, 152, 1)",
+    //                 ],
+    //                 borderWidth: 1,
+    //                 data: [35, 40, 60, 47, 88, 27, 30],
+    //             },
+    //         ],
+    //     },
+    // });
 
     // ------------------------------------------------------- //
     // Pie Chart 1
@@ -411,13 +413,13 @@ document.addEventListener("DOMContentLoaded", function () {
             },
         },
         data: {
-            labels: ["First", "Second", "Third", "Fourth"],
+            labels: ["Opening", "24/7"],
             datasets: [
                 {
-                    data: [300, 50, 100, 60],
-                    borderWidth: [0, 0, 0, 0],
-                    backgroundColor: ["#6933b9", "#8553d1", "#a372ec", "#be9df1"],
-                    hoverBackgroundColor: ["#6933b9", "#8553d1", "#a372ec", "#be9df1"],
+                    data: [response["pie_data"]["open_only"], response["pie_data"]["open_24"]],
+                    borderWidth: [0, 0],
+                    backgroundColor: ["#6933b9", "#8553d1"],
+                    hoverBackgroundColor: ["#6933b9", "#8553d1"],
                 },
             ],
         },
@@ -436,13 +438,13 @@ document.addEventListener("DOMContentLoaded", function () {
             },
         },
         data: {
-            labels: ["First", "Second", "Third", "Fourth"],
+            labels: ["Unknown", "Opening"],
             datasets: [
                 {
-                    data: [80, 70, 100, 60],
-                    borderWidth: [0, 0, 0, 0],
-                    backgroundColor: ["#9528b9", "#b046d4", "#c767e7", "#e394fe"],
-                    hoverBackgroundColor: ["#9528b9", "#b046d4", "#c767e7", "#e394fe"],
+                    data: [response["pie_data"]["unknown"], response["pie_data"]["open_only"] + response["pie_data"]["open_24"]],
+                    borderWidth: [0, 0],
+                    backgroundColor: ["#9528b9", "#b046d4"],
+                    hoverBackgroundColor: ["#9528b9", "#b046d4"],
                 },
             ],
         },
@@ -451,27 +453,27 @@ document.addEventListener("DOMContentLoaded", function () {
     // ------------------------------------------------------- //
     // Pie Chart 3
     // ------------------------------------------------------ //
-    const PIECHARTHOME3 = document.getElementById("pieChartHome3");
-    var myPieChart = new Chart(PIECHARTHOME3, {
-        type: "doughnut",
-        options: {
-            cutoutPercentage: 90,
-            legend: {
-                display: false,
-            },
-        },
-        data: {
-            labels: ["First", "Second", "Third", "Fourth"],
-            datasets: [
-                {
-                    data: [120, 90, 77, 95],
-                    borderWidth: [0, 0, 0, 0],
-                    backgroundColor: ["#da4d60", "#e96577", "#f28695", "#ffb6c1"],
-                    hoverBackgroundColor: ["#da4d60", "#e96577", "#f28695", "#ffb6c1"],
-                },
-            ],
-        },
-    });
+    // const PIECHARTHOME3 = document.getElementById("pieChartHome3");
+    // var myPieChart = new Chart(PIECHARTHOME3, {
+    //     type: "doughnut",
+    //     options: {
+    //         cutoutPercentage: 90,
+    //         legend: {
+    //             display: false,
+    //         },
+    //     },
+    //     data: {
+    //         labels: ["First", "Second", "Third", "Fourth"],
+    //         datasets: [
+    //             {
+    //                 data: [120, 90, 77, 95],
+    //                 borderWidth: [0, 0, 0, 0],
+    //                 backgroundColor: ["#da4d60", "#e96577", "#f28695", "#ffb6c1"],
+    //                 hoverBackgroundColor: ["#da4d60", "#e96577", "#f28695", "#ffb6c1"],
+    //             },
+    //         ],
+    //     },
+    // });
 
     // ------------------------------------------------------- //
     // Sales Bar Chart 1

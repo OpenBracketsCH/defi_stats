@@ -33,7 +33,7 @@
         <section>
           <div class="container-fluid">
             <div class="row gy-4">
-              <div class="col-md-3 col-sm-6">
+              <div class="col-md-4 col-sm-6">
                 <div class="card mb-0">
                   <div class="card-body">
                     <div class="d-flex align-items-end justify-content-between mb-2">
@@ -43,7 +43,7 @@
                             </svg>
                         <p class="text-sm text-uppercase text-gray-600 lh-1 mb-0">Defis in der Schweiz</p>
                       </div>
-                      <p class="text-xxl lh-1 mb-0 text-dash-color-1">27</p>
+                      <p class="text-xxl lh-1 mb-0 text-dash-color-1" id="show_defi">0</p>
                     </div>
                     <div class="progress" style="height: 3px">
                       <div class="progress-bar bg-dash-color-1" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
@@ -51,25 +51,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-md-3 col-sm-6">
-                <div class="card mb-0">
-                  <div class="card-body">
-                    <div class="d-flex align-items-end justify-content-between mb-2">
-                      <div class="me-2">
-                            <svg class="svg-icon svg-icon-sm svg-icon-heavy text-gray-600 mb-2">
-                              <use xlink:href="#stack-1"> </use>
-                            </svg>
-                        <p class="text-sm text-uppercase text-gray-600 lh-1 mb-0">Defis im gewählten Kanton</p>
-                      </div>
-                      <p class="text-xxl lh-1 mb-0 text-dash-color-2">375</p>
-                    </div>
-                    <div class="progress" style="height: 3px">
-                      <div class="progress-bar bg-dash-color-2" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-3 col-sm-6">
+              <div class="col-md-4 col-sm-6">
                 <div class="card mb-0">
                   <div class="card-body">
                     <div class="d-flex align-items-end justify-content-between mb-2">
@@ -79,7 +61,7 @@
                             </svg>
                         <p class="text-sm text-uppercase text-gray-600 lh-1 mb-0">24h erreichbar</p>
                       </div>
-                      <p class="text-xxl lh-1 mb-0 text-dash-color-3">140</p>
+                      <p class="text-xxl lh-1 mb-0 text-dash-color-3" id="show_hours">0</p>
                     </div>
                     <div class="progress" style="height: 3px">
                       <div class="progress-bar bg-dash-color-3" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
@@ -87,7 +69,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-md-3 col-sm-6">
+              <div class="col-md-4 col-sm-6">
                 <div class="card mb-0">
                   <div class="card-body">
                     <div class="d-flex align-items-end justify-content-between mb-2">
@@ -97,7 +79,7 @@
                             </svg>
                         <p class="text-sm text-uppercase text-gray-600 lh-1 mb-0">Dispogebiete</p>
                       </div>
-                      <p class="text-xxl lh-1 mb-0 text-dash-color-4">41</p>
+                      <p class="text-xxl lh-1 mb-0 text-dash-color-4" id="show_dispo">0</p>
                     </div>
                     <div class="progress" style="height: 3px">
                       <div class="progress-bar bg-dash-color-4" role="progressbar" style="width: 35%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
@@ -111,19 +93,7 @@
         <section class="pt-0">
           <div class="container-fluid">
             <div class="row gy-4">
-              <div class="col-lg-4">
-                <div class="card">
-                  <div class="card-body">
-                    <canvas id="barChartExample1"></canvas>
-                  </div>
-                </div>
-                <div class="card">
-                  <div class="card-body">
-                    <canvas id="barChartExample2"></canvas>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-8">
+              <div class="col-lg-12">
                 <div class="card">
                   <div class="card-body">
                     <strong>Stetige Veränderung</strong>
@@ -144,7 +114,7 @@
                     <p class="text-sm fw-light mb-5">Erreichbarkeit 24h</p>
                     <div class="position-relative text-center">
                       <canvas id="pieChartHome1"></canvas>
-                      <div class="position-absolute top-50 start-50 translate-middle"><strong class="text-lg d-block">2.145</strong><span class="d-block"></span></div>
+                      <div class="position-absolute top-50 start-50 translate-middle" id="pie_opening"><strong class="text-lg d-block">0</strong><span class="d-block"></span></div>
                     </div>
                   </div>
                 </div>
@@ -156,7 +126,7 @@
                     <p class="text-sm fw-light mb-5">Ö!nungszeiten unbekannt</p>
                     <div class="position-relative text-center">
                       <canvas id="pieChartHome2"></canvas>
-                      <div class="position-absolute top-50 start-50 translate-middle"><strong class="text-lg d-block">7.784</strong><span class="d-block"></span></div>
+                      <div class="position-absolute top-50 start-50 translate-middle" id="pie_unknown"><strong class="text-lg d-block">0</strong><span class="d-block"></span></div>
                     </div>
                   </div>
                 </div>
@@ -164,11 +134,10 @@
               <div class="col-lg-4">
                 <div class="card">
                   <div class="card-body">
-                    <h3 class="h4 mb-0">Direct Sales</h3>
-                    <p class="text-sm fw-light mb-5">Lorem ipsum dolor sit</p>
+                    <h3 class="h4 mb-0">Defis im gewählten Kanton</h3>
+                    <p class="text-sm fw-light mb-5">Defis im gewählten Kanton</p>
                     <div class="position-relative text-center">
-                      <canvas id="pieChartHome3"></canvas>
-                      <div class="position-absolute top-50 start-50 translate-middle"><strong class="text-lg d-block">4.957</strong><span class="d-block"></span></div>
+                      <canvas id="barChartExample1"></canvas>
                     </div>
                   </div>
                 </div>
@@ -186,6 +155,7 @@
       </div>
     </div>
     <!-- JavaScript files-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="vendor/just-validate/js/just-validate.min.js"></script>
     <script src="vendor/chart.js/Chart.min.js"></script>
