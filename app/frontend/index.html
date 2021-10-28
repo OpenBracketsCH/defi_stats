@@ -26,9 +26,8 @@
       <div class="page-content">
         <!-- Page Header-->
         <div class="bg-dash-dark-2 py-xl-2">
-          <img src="img/favicon.ico" height="50px">
           <div class="container-fluid text-center">
-            <h1 class="h1 mb-2">Defikarte.ch Statistiken</h1>
+            <h1 class="h1 mb-2">Defikarte.ch Statistiken Schweiz</h1>
           </div>
         </div>
         <section>
@@ -94,11 +93,11 @@
         <section class="pt-0">
           <div class="container-fluid">
             <div class="row gy-4">
-              <div class="col-lg-6">
+              <div class="col-md-4 col-sm-6">
                 <div class="card">
                   <div class="card-body">
                     <h3 class="h4 mb-0">Erreichbarkeit 24h</h3>
-                    <p class="text-sm fw-light mb-5">Erreichbarkeit 24h</p>
+                    <p class="text-sm fw-light mb-5">Diese Defis sind 24h öffentlich zugänglich</p>
                     <div class="position-relative text-center">
                       <canvas id="pieChartHome1"></canvas>
                       <div class="position-absolute top-50 start-50 translate-middle" id="pie_opening"><strong class="text-lg d-block">0</strong><span class="d-block"></span></div>
@@ -106,14 +105,26 @@
                   </div>
                 </div>
               </div>
-              <div class="col-lg-6">
+              <div class="col-md-4 col-sm-6">
                 <div class="card">
                   <div class="card-body">
                     <h3 class="h4 mb-0">Öffnungszeiten unbekannt</h3>
-                    <p class="text-sm fw-light mb-5">Öffnungszeiten unbekannt</p>
+                    <p class="text-sm fw-light mb-5">Von diesen Defis sind die Öffnungszeiten nicht bekannt</p>
                     <div class="position-relative text-center">
                       <canvas id="pieChartHome2"></canvas>
                       <div class="position-absolute top-50 start-50 translate-middle" id="pie_unknown"><strong class="text-lg d-block">0</strong><span class="d-block"></span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6">
+                <div class="card">
+                  <div class="card-body">
+                    <h3 class="h4 mb-0">to be defined</h3>
+                    <p class="text-sm fw-light mb-5">to be defined</p>
+                    <div class="position-relative text-center">
+                      <canvas id="pieChartHome3"></canvas>
+                      <div class="position-absolute top-50 start-50 translate-middle" id="pie_unknown2"><strong class="text-lg d-block">0</strong><span class="d-block"></span></div>
                     </div>
                   </div>
                 </div>
@@ -127,7 +138,7 @@
               <div class="card">
                 <div class="card-body">
                   <h3 class="h4 mb-0">Defis nach Kantonen</h3>
-                  <p class="text-sm fw-light mb-5">Defis nach Kantonen</p>
+                  <p class="text-sm fw-light mb-5">Diese Statistik zeigt die Gesamtzahl an Defibrillatoren in den einzelnen Kantonen</p>
                   <div class="position-relative text-center">
                     <canvas id="barChartExample1"></canvas>
                   </div>
@@ -139,7 +150,7 @@
         <section class="pt-0">
           <div class="container-fluid">
             <div class="row gy-4">
-              <div class="col-lg-12">
+              <div class="col-lg-6">
                 <div class="card">
                   <div class="card-body">
                     <strong>Datenstatistik</strong>
