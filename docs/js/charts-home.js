@@ -33,7 +33,7 @@ function loading(){
 
     const LINECHART = document.getElementById("lineChart");
     const max_val = Math.max.apply(null, response["line_data"]["data"]) + 100;
-    const min_val = Math.min.apply(null, response["line_data"]["data"]) + 100;
+    const min_val = Math.min.apply(null, response["line_data"]["data"]) - 100;
     var homeLineChart = new Chart(LINECHART, {
         type: "line",
         options: {
