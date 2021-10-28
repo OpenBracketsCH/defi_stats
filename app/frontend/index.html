@@ -25,9 +25,10 @@
     <div class="d-flex align-items-stretch">
       <div class="page-content">
         <!-- Page Header-->
-        <div class="bg-dash-dark-2 py-4">
+        <div class="bg-dash-dark-2 py-xl-2">
+          <img src="img/favicon.ico" height="50px">
           <div class="container-fluid text-center">
-            <h2 class="h5 mb-0">Defi Stats Switzerland</h2>
+            <h1 class="h1 mb-2">Defikarte.ch Statistiken</h1>
           </div>
         </div>
         <section>
@@ -41,12 +42,12 @@
                             <svg class="svg-icon svg-icon-sm svg-icon-heavy text-gray-600 mb-2">
                               <use xlink:href="#user-1"> </use>
                             </svg>
-                        <p class="text-sm text-uppercase text-gray-600 lh-1 mb-0">Defis in der Schweiz</p>
+                        <p class="text-lg text-gray-600 lh-1 mb-0">Defis in der Schweiz</p>
                       </div>
                       <p class="text-xxl lh-1 mb-0 text-dash-color-1" id="show_defi">0</p>
                     </div>
                     <div class="progress" style="height: 3px">
-                      <div class="progress-bar bg-dash-color-1" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                      <div class="progress-bar bg-dash-color-1" role="progressbar" style="width: 100%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                   </div>
                 </div>
@@ -59,12 +60,12 @@
                             <svg class="svg-icon svg-icon-sm svg-icon-heavy text-gray-600 mb-2">
                               <use xlink:href="#survey-1"> </use>
                             </svg>
-                        <p class="text-sm text-uppercase text-gray-600 lh-1 mb-0">24h erreichbar</p>
+                        <p class="text-lg text-gray-600 lh-1 mb-0">24h erreichbar</p>
                       </div>
                       <p class="text-xxl lh-1 mb-0 text-dash-color-3" id="show_hours">0</p>
                     </div>
                     <div class="progress" style="height: 3px">
-                      <div class="progress-bar bg-dash-color-3" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
+                      <div class="progress-bar bg-dash-color-3" role="progressbar" style="width: 100%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                   </div>
                 </div>
@@ -77,13 +78,58 @@
                             <svg class="svg-icon svg-icon-sm svg-icon-heavy text-gray-600 mb-2">
                               <use xlink:href="#paper-stack-1"> </use>
                             </svg>
-                        <p class="text-sm text-uppercase text-gray-600 lh-1 mb-0">Dispogebiete</p>
+                        <p class="text-lg text-gray-600 lh-1 mb-0">Dispogebiete mit Defikarte eingebunden</p>
                       </div>
                       <p class="text-xxl lh-1 mb-0 text-dash-color-4" id="show_dispo">0</p>
                     </div>
                     <div class="progress" style="height: 3px">
-                      <div class="progress-bar bg-dash-color-4" role="progressbar" style="width: 35%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
+                      <div class="progress-bar bg-dash-color-4" role="progressbar" style="width: 100%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="pt-0">
+          <div class="container-fluid">
+            <div class="row gy-4">
+              <div class="col-lg-6">
+                <div class="card">
+                  <div class="card-body">
+                    <h3 class="h4 mb-0">Erreichbarkeit 24h</h3>
+                    <p class="text-sm fw-light mb-5">Erreichbarkeit 24h</p>
+                    <div class="position-relative text-center">
+                      <canvas id="pieChartHome1"></canvas>
+                      <div class="position-absolute top-50 start-50 translate-middle" id="pie_opening"><strong class="text-lg d-block">0</strong><span class="d-block"></span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="card">
+                  <div class="card-body">
+                    <h3 class="h4 mb-0">Öffnungszeiten unbekannt</h3>
+                    <p class="text-sm fw-light mb-5">Öffnungszeiten unbekannt</p>
+                    <div class="position-relative text-center">
+                      <canvas id="pieChartHome2"></canvas>
+                      <div class="position-absolute top-50 start-50 translate-middle" id="pie_unknown"><strong class="text-lg d-block">0</strong><span class="d-block"></span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="pt-0">
+          <div class="container-fluid">
+            <div class="col-lg-6">
+              <div class="card">
+                <div class="card-body">
+                  <h3 class="h4 mb-0">Defis nach Kantonen</h3>
+                  <p class="text-sm fw-light mb-5">Defis nach Kantonen</p>
+                  <div class="position-relative text-center">
+                    <canvas id="barChartExample1"></canvas>
                   </div>
                 </div>
               </div>
@@ -96,49 +142,8 @@
               <div class="col-lg-12">
                 <div class="card">
                   <div class="card-body">
-                    <strong>Stetige Veränderung</strong>
+                    <strong>Datenstatistik</strong>
                     <canvas id="lineChart"></canvas>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        <section class="pt-0">
-          <div class="container-fluid">
-            <div class="row gy-4">
-              <div class="col-lg-4">
-                <div class="card">
-                  <div class="card-body">
-                    <h3 class="h4 mb-0">Erreichbarkeit 24h</h3>
-                    <p class="text-sm fw-light mb-5">Erreichbarkeit 24h</p>
-                    <div class="position-relative text-center">
-                      <canvas id="pieChartHome1"></canvas>
-                      <div class="position-absolute top-50 start-50 translate-middle" id="pie_opening"><strong class="text-lg d-block">0</strong><span class="d-block"></span></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-4">
-                <div class="card">
-                  <div class="card-body">
-                    <h3 class="h4 mb-0">Ö!nungszeiten unbekannt</h3>
-                    <p class="text-sm fw-light mb-5">Ö!nungszeiten unbekannt</p>
-                    <div class="position-relative text-center">
-                      <canvas id="pieChartHome2"></canvas>
-                      <div class="position-absolute top-50 start-50 translate-middle" id="pie_unknown"><strong class="text-lg d-block">0</strong><span class="d-block"></span></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-4">
-                <div class="card">
-                  <div class="card-body">
-                    <h3 class="h4 mb-0">Defis im gewählten Kanton</h3>
-                    <p class="text-sm fw-light mb-5">Defis im gewählten Kanton</p>
-                    <div class="position-relative text-center">
-                      <canvas id="barChartExample1"></canvas>
-                    </div>
                   </div>
                 </div>
               </div>
