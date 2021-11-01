@@ -67,7 +67,7 @@ function loading(){
             labels: response["line_data"]["label"],
             datasets: [
                 {
-                    label: "Count",
+                    label: "Datenveränderung",
                     fill: true,
                     lineTension: 0.2,
                     backgroundColor: "transparent",
@@ -127,7 +127,7 @@ function loading(){
             labels: response["bar_data"]["label"],
             datasets: [
                 {
-                    label: "count",
+                    label: "Anzahl nach Kantonen",
                     backgroundColor: color_arr,
                     hoverBackgroundColor: color_arr,
                     borderColor: color_arr,
@@ -145,19 +145,19 @@ function loading(){
     var myPieChart = new Chart(PIECHARTHOME1, {
         type: "doughnut",
         options: {
-            cutoutPercentage: 90,
+            cutoutPercentage: 70,
             legend: {
                 display: false,
             },
         },
         data: {
-            labels: ["Opening", "24/7"],
+            labels: ["Alle Defis", "24h verfügbar"],
             datasets: [
                 {
-                    data: [response["pie_data"]["open_only"], response["pie_data"]["open_24"]],
+                    data: [response["pie_data"]["all"], response["pie_data"]["open_24"]],
                     borderWidth: [0, 0],
-                    backgroundColor: ["#6933b9", "#8553d1"],
-                    hoverBackgroundColor: ["#6933b9", "#8553d1"],
+                    backgroundColor: ["#990000", "#3f8d1d"],
+                    hoverBackgroundColor: ["#990000", "#3f8d1d"],
                 },
             ],
         },
@@ -170,7 +170,36 @@ function loading(){
     var myPieChart = new Chart(PIECHARTHOME2, {
         type: "doughnut",
         options: {
-            cutoutPercentage: 90,
+            cutoutPercentage: 70,
+            legend: {
+                display: false,
+            },
+        },
+        data: {
+            labels: ["Alle Defis", "Öffnungszeiten bekannt"],
+            datasets: [
+                {
+                    data: [response["pie_data"]["all"], response["pie_data"]["open_only"] + response["pie_data"]["open_24"]],
+                    borderWidth: [0, 0],
+                    backgroundColor: ["#ffa500", "#990000"],
+                    hoverBackgroundColor: ["#ffa500", "#990000"],
+                },
+            ],
+        },
+    });
+
+    var pieChartExample = {
+        responsive: true,
+    };
+
+    // ------------------------------------------------------- //
+    // Pie Chart 3
+    // ------------------------------------------------------ //
+    const PIECHARTHOME3 = document.getElementById("pieChartHome3");
+    var myPieChart = new Chart(PIECHARTHOME2, {
+        type: "doughnut",
+        options: {
+            cutoutPercentage: 70,
             legend: {
                 display: false,
             },
@@ -181,8 +210,8 @@ function loading(){
                 {
                     data: [response["pie_data"]["unknown"], response["pie_data"]["open_only"] + response["pie_data"]["open_24"]],
                     borderWidth: [0, 0],
-                    backgroundColor: ["#9528b9", "#b046d4"],
-                    hoverBackgroundColor: ["#9528b9", "#b046d4"],
+                    backgroundColor: ["#ffa500", "#990000"],
+                    hoverBackgroundColor: ["#ffa500", "#990000"],
                 },
             ],
         },
