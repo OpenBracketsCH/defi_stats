@@ -176,10 +176,10 @@ function loading(){
             },
         },
         data: {
-            labels: ["Alle Defis", "Öffnungszeiten bekannt"],
+            labels: ["Alle Defis", "Öffnungszeiten"],
             datasets: [
                 {
-                    data: [response["pie_data"]["all"], response["pie_data"]["open_only"] + response["pie_data"]["open_24"]],
+                    data: [response["pie_data"]["all"], response["pie_data"]["open_only"]],
                     borderWidth: [0, 0],
                     backgroundColor: ["#ffa500", "#990000"],
                     hoverBackgroundColor: ["#ffa500", "#990000"],
