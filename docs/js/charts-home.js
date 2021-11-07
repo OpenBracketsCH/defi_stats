@@ -196,7 +196,7 @@ function loading(){
     // Pie Chart 3
     // ------------------------------------------------------ //
     const PIECHARTHOME3 = document.getElementById("pieChartHome3");
-    var myPieChart = new Chart(PIECHARTHOME2, {
+    var myPieChart = new Chart(PIECHARTHOME3, {
         type: "doughnut",
         options: {
             cutoutPercentage: 70,
