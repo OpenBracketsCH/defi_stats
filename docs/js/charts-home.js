@@ -1,5 +1,5 @@
 function loading(){
-    let base_url = "https://defistatsdeployment.herokuapp.com/";
+    let base_url = "https://defistatsbackend.azurewebsites.net/";
     // ------------------------------------------------------- //
     // Set All Defis Data
     // ------------------------------------------------------ //
