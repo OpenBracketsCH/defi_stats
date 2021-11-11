@@ -181,8 +181,8 @@ function loading(){
                 {
                     data: [response["pie_data"]["all"], response["pie_data"]["open_only"]],
                     borderWidth: [0, 0],
-                    backgroundColor: ["#ffa500", "#990000"],
-                    hoverBackgroundColor: ["#ffa500", "#990000"],
+                    backgroundColor: ["#990000", "#ffa500"],
+                    hoverBackgroundColor: ["#990000", "#ffa500"],
                 },
             ],
         },
