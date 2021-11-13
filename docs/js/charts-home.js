@@ -220,6 +220,35 @@ function loading(){
     var pieChartExample = {
         responsive: true,
     };
+
+        // ------------------------------------------------------- //
+    // Pie Chart 4
+    // ------------------------------------------------------ //
+    const PIECHARTHOME4 = document.getElementById("pieChartHome4");
+    var myPieChart = new Chart(PIECHARTHOME4, {
+        type: "doughnut",
+        options: {
+            cutoutPercentage: 70,
+            legend: {
+                display: false,
+            },
+        },
+        data: {
+            labels: ["Alle Defis", "Öffnungszeiten"],
+            datasets: [
+                {
+                    data: [response["pie_data"]["all"], response["pie_data"]["open_only"]],
+                    borderWidth: [0, 0],
+                    backgroundColor: ["#990000", "#ffa500"],
+                    hoverBackgroundColor: ["#990000", "#ffa500"],
+                },
+            ],
+        },
+    });
+
+    var pieChartExample = {
+        responsive: true,
+    };
 }
 
 $( document ).ready(function() {
