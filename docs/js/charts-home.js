@@ -17,6 +17,7 @@ function loading(){
             $("#show_dispo").text(response["dispo"]);
             $("#region_data").text(response["bar_data"]["data"][0]);
             $("#pie_opening").html('<strong class="text-lg d-block">' + response["pie_data"]["open_24"] + '</strong>');
+            $("#pie_open_only").html('<strong class="text-lg d-block">' + response["pie_data"]["open_only"] + '</strong>');
             $("#pie_unknown").html('<strong class="text-lg d-block">' + response["pie_data"]["unknown"] + '</strong>');
         }
     });
@@ -176,7 +177,7 @@ function loading(){
             },
         },
         data: {
-            labels: ["Alle Defis", "Öffnungszeiten"],
+            labels: ["Alle Defis", "Öffnungszeiten bekannt"],
             datasets: [
                 {
                     data: [response["pie_data"]["all"], response["pie_data"]["open_only"]],
@@ -205,42 +206,13 @@ function loading(){
             },
         },
         data: {
-            labels: ["Unknown", "Opening"],
+            labels: ["Alle Defis", "Öffnungszeiten unbekannt"],
             datasets: [
                 {
-                    data: [response["pie_data"]["unknown"], response["pie_data"]["open_only"] + response["pie_data"]["open_24"]],
+                    data: [response["pie_data"]["all"], response["pie_data"]["unknown"]],
                     borderWidth: [0, 0],
-                    backgroundColor: ["#ffa500", "#990000"],
-                    hoverBackgroundColor: ["#ffa500", "#990000"],
-                },
-            ],
-        },
-    });
-
-    var pieChartExample = {
-        responsive: true,
-    };
-
-        // ------------------------------------------------------- //
-    // Pie Chart 4
-    // ------------------------------------------------------ //
-    const PIECHARTHOME4 = document.getElementById("pieChartHome4");
-    var myPieChart = new Chart(PIECHARTHOME4, {
-        type: "doughnut",
-        options: {
-            cutoutPercentage: 70,
-            legend: {
-                display: false,
-            },
-        },
-        data: {
-            labels: ["Alle Defis", "Öffnungszeiten"],
-            datasets: [
-                {
-                    data: [response["pie_data"]["all"], response["pie_data"]["open_only"]],
-                    borderWidth: [0, 0],
-                    backgroundColor: ["#990000", "#ffa500"],
-                    hoverBackgroundColor: ["#990000", "#ffa500"],
+                    backgroundColor: ["#864DD9", "#990000"],
+                    hoverBackgroundColor: ["#864DD9", "#990000"],
                 },
             ],
         },
