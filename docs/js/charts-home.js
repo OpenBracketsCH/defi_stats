@@ -72,9 +72,9 @@ function loading(){
                     fill: true,
                     lineTension: 0.2,
                     backgroundColor: "transparent",
-                    borderColor: "#864DD9",
-                    pointBorderColor: "#864DD9",
-                    pointHoverBackgroundColor: "#864DD9",
+                    borderColor: "#3f8d1d",
+                    pointBorderColor: "#3f8d1d",
+                    pointHoverBackgroundColor: "#3f8d1d",
                     borderCapStyle: "butt",
                     borderDash: [],
                     borderDashOffset: 0.0,
@@ -100,7 +100,7 @@ function loading(){
     const BARCHARTEXMPLE1 = document.getElementById("barChartExample1");
     let color_arr = []
     for (var idx=0; idx < response["bar_data"]["label"].length; idx++){
-        color_arr.push("rgba(134, 77, 217, 0.57)");
+        color_arr.push("#0959AB");
     }
     var barChartExample = new Chart(BARCHARTEXMPLE1, {
         type: "bar",
@@ -157,8 +157,8 @@ function loading(){
                 {
                     data: [response["pie_data"]["all"], response["pie_data"]["open_24"]],
                     borderWidth: [0, 0],
-                    backgroundColor: ["#990000", "#3f8d1d"],
-                    hoverBackgroundColor: ["#990000", "#3f8d1d"],
+                    backgroundColor: ["#0959AB", "#3f8d1d"],
+                    hoverBackgroundColor: ["0959AB", "#3f8d1d"],
                 },
             ],
         },
@@ -182,8 +182,8 @@ function loading(){
                 {
                     data: [response["pie_data"]["all"], response["pie_data"]["open_only"]],
                     borderWidth: [0, 0],
-                    backgroundColor: ["#990000", "#ffa500"],
-                    hoverBackgroundColor: ["#990000", "#ffa500"],
+                    backgroundColor: ["#0959AB", "#ffa500"],
+                    hoverBackgroundColor: ["#0959AB", "#ffa500"],
                 },
             ],
         },
@@ -211,8 +211,8 @@ function loading(){
                 {
                     data: [response["pie_data"]["all"], response["pie_data"]["unknown"]],
                     borderWidth: [0, 0],
-                    backgroundColor: ["#864DD9", "#990000"],
-                    hoverBackgroundColor: ["#864DD9", "#990000"],
+                    backgroundColor: ["#0959AB", "#990000"],
+                    hoverBackgroundColor: ["#0959AB", "#990000"],
                 },
             ],
         },
