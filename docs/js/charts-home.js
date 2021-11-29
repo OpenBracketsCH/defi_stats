@@ -158,7 +158,7 @@ function loading(){
                     data: [response["pie_data"]["all"], response["pie_data"]["open_24"]],
                     borderWidth: [0, 0],
                     backgroundColor: ["#0959AB", "#3f8d1d"],
-                    hoverBackgroundColor: ["0959AB", "#3f8d1d"],
+                    hoverBackgroundColor: ["#0959AB", "#3f8d1d"],
                 },
             ],
         },
