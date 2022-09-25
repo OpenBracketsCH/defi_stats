@@ -126,7 +126,7 @@ function loading(){
         },
         data: {
             labels: response["bar_data"]["label"],
-            datasets: [
+            datasets: [                                            
                 {
                     label: "Anzahl nach Kantonen",
                     backgroundColor: color_arr,
