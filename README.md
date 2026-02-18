@@ -1,8 +1,10 @@
 # Defikarte.ch Statistiken Schweiz
 
-![screenshot.png](screenshot.png)
+<img src="https://defikarte.ch/defikarte-logo-quer-gruen-positiv-rgb.png" alt="defikarte.ch" style="width:400px;"/>
 
 ## Funktion
+
+![screenshot.png](screenshot.png)
 
 Die ganze Funktion ist in `index.html`abgelegt. Grundsätzlich werden vom Github Repository https://github.com/OpenBracketsCH/defi_data stündlich die neusten Daten gezogen. Das Dashboard aktualisiert sich dann automatisch mit. Wenn kein GeoJSON gefunden wird, werden auch keine Daten angezeigt. Es gibt kein Caching der Daten.
 
