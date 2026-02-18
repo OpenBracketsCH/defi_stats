@@ -2,28 +2,30 @@
 
 ![screenshot.png](screenshot.png)
 
-## Erklärung zum Dashboard und den Grafiken
+## Funktion
 
-### Erreichbarkeit 24h
+Die ganze Funktion ist in `index.html`abgelegt. Grundsätzlich werden vom Github Repository https://github.com/OpenBracketsCH/defi_data stündlich die neusten Daten gezogen. Das Dashboard aktualisiert sich dann automatisch mit. Wenn kein GeoJSON gefunden wird, werden auch keine Daten angezeigt. Es gibt kein Caching der Daten.
 
-Diese Grafik zeigt in `grün` die Menge an Defis die 24h öffentlich verfügbar sind, in Relation zur Gesamtzahl aller Defis in der Schweiz.
+## Erklärung zum Dashboard
 
-### Öffnungszeiten bekannt
+### Datenqualität
 
-Diese Grafik zeigt in `gelb` die Menge an Defis bei denen die Öffnungszeiten bekannt und gepflegt sind, in Relation zur Gesamtzahl aller Defis in der Schweiz.
+Der Reiter Datenqualität zeigt kurz und prägnant die Qualität der Daten über die gesamte Schweiz. Dabei wird ein Qualitäts-Score vergeben, dieser berechnet sich aus positiven und negativen Werten. Diese Werte generieren sich von den erhobenen Kernattributen und ob diese erfasst sind:
 
-### Öffnungszeiten bekannt
+* Standortbeschreibung
+* Innen vs. Aussen
+* Betreiber
+* Zugänglichkeit
+* Öffnungszeiten
+* Telefonnummer
+* Beschreibung
+* Stockwerk
+* Rollstuhlzugang
 
-Diese Grafik zeigt in `rot` die Menge an Defis bei denen die Öffnungszeiten unbekannt und nicht gepflegt sind, in Relation zur Gesamtzahl aller Defis in der Schweiz.
+### Kantons-Rangliste
 
-### Defis nach Kantonen
+Der Reiter Datenqualität ist auf jeden Kanton aufgeschlüsselt in die oben erwähnten Punkte. Somit kann man pro Kanton Schlüsse ziehen wie es um die Datenqualität steht.
 
-Diese Grafik zeigt in einem Barchart die Gesamtzahl an Defis pro Kanton an. Fahre mit der Maus über die Grafik um Kantone zu sehen.
+### Grafik exportieren
 
-### Datentrend
-
-Diese Grafik zeigt den Trend der Daten der letzten Tage an. Wenn alles gut läuft sollte diese Grafik immer anteigend sein.
-
-## Backend
-
-Das Repository zum Python Backend findet ihr [bei Github](https://github.com/chnuessli/defi_stats_backend)
+Es lassen sich für die Kantone oder dann schweizweit die Werte als Grafik exportieren. Das kann helfen, wenn ein Kanton sich selber bewerten und dies publizieren will.

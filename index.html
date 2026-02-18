@@ -466,6 +466,96 @@
   .fade-in:nth-child(3){ animation-delay:.14s }
   .fade-in:nth-child(4){ animation-delay:.19s }
   @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+
+  /* ── EXPORT SECTION ──────────────────────────────────────── */
+  .export-section { margin-bottom: 48px; }
+  .export-box {
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+  }
+  .export-controls {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    margin-bottom: 20px;
+  }
+  .export-group { display: flex; flex-direction: column; gap: 6px; }
+  .export-group label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-muted); }
+  .export-select {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px; font-weight: 600;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    background: var(--bg);
+    color: var(--text-dark);
+    cursor: pointer;
+    min-width: 200px;
+  }
+  .export-select:focus { outline: none; border-color: var(--green-btn); }
+  .export-btn {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px; font-weight: 700;
+    background: var(--green-dark);
+    color: #fff;
+    border: none;
+    padding: 9px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+  .export-btn:hover { background: var(--green-btn); }
+  .export-preview {
+    display: none;
+    margin-top: 20px;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+  }
+  .export-preview.visible { display: block; }
+  .export-preview canvas {
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: var(--shadow-md);
+    display: block;
+    margin: 0 auto 16px;
+  }
+  .export-download {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .dl-btn {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px; font-weight: 700;
+    background: var(--green-btn);
+    color: #fff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .dl-btn:hover { background: var(--green-dark); }
+  
+  .export-btn-hero:hover {
+    background: var(--green-mid);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(74,124,47,0.3);
+  }
+  .export-btn-hero:active {
+    transform: translateY(0);
+  }
+  .export-btn-hero:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 </style>
 </head>
 <body>
@@ -532,7 +622,7 @@
 
     <div class="ranking-section">
       <div class="section-head">
-        <h2>Kantonsranking</h2>
+        <h2>Kantons-Rankliste</h2>
         <span class="section-sub" id="ranking-sub"></span>
       </div>
       <div class="ranking-box">
@@ -560,6 +650,36 @@
             </thead>
             <tbody id="ranking-body"></tbody>
           </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPORT -->
+    <div class="export-section">
+      <div class="section-head">
+        <h2>Social Media Grafik</h2>
+        <span class="section-sub">Als PNG exportieren · 1080×1080px</span>
+      </div>
+      <div class="export-box">
+        <div class="export-controls">
+          <div class="export-group">
+            <label>Grafiktyp</label>
+            <select class="export-select" id="export-type" onchange="updateCantonSelect()">
+              <option value="overview">Schweizweite Gesamtübersicht</option>
+              <option value="canton">Kanton im Fokus</option>
+            </select>
+          </div>
+          <div class="export-group" id="canton-select-group" style="display:none">
+            <label>Kanton wählen</label>
+            <select class="export-select" id="export-canton"></select>
+          </div>
+          <button class="export-btn" onclick="generateGraphic()">🖼 Grafik generieren</button>
+        </div>
+        <div class="export-preview" id="export-preview">
+          <canvas id="export-canvas" width="1080" height="1080"></canvas>
+          <div class="export-download">
+            <a class="dl-btn" id="dl-btn" download="defikarte-grafik.png">⬇ PNG herunterladen</a>
+          </div>
         </div>
       </div>
     </div>
@@ -701,6 +821,7 @@ function renderDashboard(){
   document.getElementById('meta-total').textContent=fmt(totalDefis);
   document.getElementById('meta-cantons').textContent=allData.length;
   document.getElementById('meta-score').textContent=avgScore.toFixed(0)+'%';
+  populateCantonSelect();
 
   let notices='';
   if(failedCantons.length){
@@ -850,6 +971,343 @@ function sortBy(key,btn){
   document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   renderTable();
+}
+
+
+
+// ── EXPORT FUNKTIONEN ────────────────────────────────────────────────────────────────────────────
+
+function updateCantonSelect(){
+  const type = document.getElementById("export-type").value;
+  const group = document.getElementById("canton-select-group");
+  group.style.display = type === "canton" ? "flex" : "none";
+}
+
+function populateCantonSelect(){
+  const sel = document.getElementById("export-canton");
+  const sorted = [...allData].sort((a,b)=>a.name.localeCompare(b.name));
+  sel.innerHTML = sorted.map(c=>`<option value="${c.code}">${c.name}</option>`).join("");
+}
+
+function roundRect(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y);
+  ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+  ctx.lineTo(x+w, y+h-r);
+  ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+  ctx.lineTo(x+r, y+h);
+  ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+  ctx.lineTo(x, y+r);
+  ctx.quadraticCurveTo(x, y, x+r, y);
+  ctx.closePath();
+}
+
+function drawBar(ctx, x, y, w, h, pct, cls){
+  const col = cls==="good"?"#4A7C2F": cls==="warn"?"#C96A00":"#B83232";
+  ctx.fillStyle = "#C8DDB8";
+  roundRect(ctx, x, y, w, h, h/2); ctx.fill();
+  if(pct > 0){
+    ctx.fillStyle = col;
+    roundRect(ctx, x, y, Math.max(w*pct/100, h), h, h/2); ctx.fill();
+  }
+}
+
+function pctC(p){ return p>=85?"good":p>=55?"warn":"danger"; }
+function colC(p){ return p>=85?"#4A7C2F":p>=55?"#C96A00":"#B83232"; }
+
+async function loadImage(src){
+  return new Promise((res,rej)=>{
+    const img = new Image();
+    img.onload = ()=>res(img);
+    img.onerror = ()=>res(null);
+    img.src = src;
+  });
+}
+
+
+// ── EXPORT FUNKTIONEN ────────────────────────────────────────────────────────────────────────────
+
+function updateCantonSelect(){
+  const type = document.getElementById('export-type').value;
+  const group = document.getElementById('canton-select-group');
+  group.style.display = type === 'canton' ? 'flex' : 'none';
+}
+
+function populateCantonSelect(){
+  const sel = document.getElementById('export-canton');
+  const sorted = [...allData].sort((a,b)=>a.name.localeCompare(b.name));
+  sel.innerHTML = sorted.map(c=>`<option value="${c.code}">${c.name}</option>`).join('');
+}
+
+// Hilfsfunktionen fürs Canvas
+function roundRect(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y);
+  ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+  ctx.lineTo(x+w, y+h-r);
+  ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+  ctx.lineTo(x+r, y+h);
+  ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+  ctx.lineTo(x, y+r);
+  ctx.quadraticCurveTo(x, y, x+r, y);
+  ctx.closePath();
+}
+
+function drawBar(ctx, x, y, w, h, pct, cls){
+  const col = cls==='good'?'#4A7C2F': cls==='warn'?'#C96A00':'#B83232';
+  // Hintergrund
+  ctx.fillStyle = '#C8DDB8';
+  roundRect(ctx, x, y, w, h, h/2); ctx.fill();
+  // Füllung
+  if(pct > 0){
+    ctx.fillStyle = col;
+    roundRect(ctx, x, y, Math.max(w*pct/100, h), h, h/2); ctx.fill();
+  }
+}
+
+function pctC(p){ return p>=85?'good':p>=55?'warn':'danger'; }
+function colC(p){ return p>=85?'#4A7C2F':p>=55?'#C96A00':'#B83232'; }
+
+async function loadImage(src){
+  return new Promise((res,rej)=>{
+    const img = new Image();
+    img.onload = ()=>res(img);
+    img.onerror = ()=>res(null);
+    img.src = src;
+  });
+}
+
+// ── GRAFIK: SCHWEIZWEITE ÜBERSICHT ───────────────────────────────────────────────────────────────
+async function drawOverview(ctx, canvas){
+  const W=canvas.width, H=canvas.height;
+  const totalDefis = allData.reduce((s,c)=>s+c.total,0);
+  const avgScore   = allData.reduce((s,c)=>s+c.score,0)/allData.length;
+  const grandTotal = totalDefis;
+
+  // Hintergrund
+  ctx.fillStyle = '#F4F1EB';
+  ctx.fillRect(0,0,W,H);
+
+  // Header-Band
+  ctx.fillStyle = '#2C4A1E';
+  ctx.fillRect(0,0,W,180);
+
+  // Logo laden & zeichnen
+  const logoImg = await loadImage(document.querySelector('.logo img').src);
+  if(logoImg){
+    const lh=70, lw=logoImg.width*(lh/logoImg.height);
+    ctx.drawImage(logoImg, 54, 55, lw, lh);
+  }
+
+  // Header-Subtext
+  ctx.fillStyle='rgba(255,255,255,0.6)';
+  ctx.font='600 28px Open Sans, sans-serif';
+  ctx.textAlign='right';
+  ctx.fillText('Datenqualitäts-Report', W-54, 100);
+  ctx.font='400 24px Open Sans, sans-serif';
+  ctx.fillStyle='rgba(255,255,255,0.45)';
+  ctx.fillText(new Date().toLocaleDateString('de-CH'), W-54, 136);
+
+  // Grüner Akzentstreifen
+  ctx.fillStyle='#4A7C2F';
+  ctx.fillRect(0,180,W,8);
+
+  // Grosse KPI-Zahlen
+  const kpis = [
+    { val: fmt(totalDefis), label: 'Defibrillatoren' },
+    { val: avgScore.toFixed(0)+'%', label: 'Ø Qualitätsscore' },
+    { val: allData.length.toString(), label: 'Kantone erfasst' },
+  ];
+  const kpiY = 230;
+  const kpiW = (W-108)/3;
+  ctx.textAlign='center';
+  kpis.forEach((k,i)=>{
+    const x = 54 + i*kpiW + kpiW/2;
+    // Box
+    ctx.fillStyle='#fff';
+    roundRect(ctx, 54+i*kpiW, kpiY, kpiW-16, 150, 12); ctx.fill();
+    ctx.fillStyle='#4A7C2F';
+    roundRect(ctx, 54+i*kpiW, kpiY, kpiW-16, 6, 3); ctx.fill();
+    // Zahl
+    ctx.fillStyle='#2C4A1E';
+    ctx.font='800 56px Open Sans, sans-serif';
+    ctx.fillText(k.val, x-8, kpiY+90);
+    // Label
+    ctx.fillStyle='#7A8F6E';
+    ctx.font='700 22px Open Sans, sans-serif';
+    ctx.fillText(k.label.toUpperCase(), x-8, kpiY+128);
+  });
+
+  // Attribut-Balken
+  const barY = 430;
+  ctx.textAlign='left';
+  ctx.fillStyle='#2C4A1E';
+  ctx.font='800 30px Open Sans, sans-serif';
+  ctx.fillText('Vollständigkeit der Kernattribute', 54, barY);
+
+  const attrs = ATTRS.slice(0,8); // max 8 für Platz
+  const bH=28, bGap=52, barX=54, barW=W-108-160;
+  attrs.forEach((a,i)=>{
+    const count=allData.reduce((s,c)=>s+(c.counts[a.key]||0),0);
+    const pct=grandTotal>0?(count/grandTotal)*100:0;
+    const cls=pctC(pct);
+    const y = barY+40 + i*bGap;
+
+    // Label
+    ctx.fillStyle='#1A2614';
+    ctx.font='600 22px Open Sans, sans-serif';
+    ctx.textAlign='left';
+    ctx.fillText(a.label, barX, y+20);
+
+    // Balken
+    drawBar(ctx, barX, y+28, barW, bH, pct, cls);
+
+    // Prozentzahl
+    ctx.fillStyle=colC(pct);
+    ctx.font='800 24px Open Sans, sans-serif';
+    ctx.textAlign='right';
+    ctx.fillText(pct.toFixed(0)+'%', W-54, y+48);
+  });
+
+  // Footer
+  ctx.fillStyle='#2C4A1E';
+  ctx.fillRect(0,H-80,W,80);
+  ctx.fillStyle='rgba(255,255,255,0.5)';
+  ctx.font='600 22px Open Sans, sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText('defikarte.ch · Daten: OpenStreetMap', W/2, H-28);
+}
+
+// ── GRAFIK: KANTON IM FOKUS ──────────────────────────────────────────────────────────────────────
+async function drawCanton(ctx, canvas, code){
+  const W=canvas.width, H=canvas.height;
+  const c = allData.find(d=>d.code===code);
+  if(!c) return;
+
+  // Hintergrund
+  ctx.fillStyle='#F4F1EB';
+  ctx.fillRect(0,0,W,H);
+
+  // Header
+  ctx.fillStyle='#2C4A1E';
+  ctx.fillRect(0,0,W,200);
+  ctx.fillStyle='#4A7C2F';
+  ctx.fillRect(0,200,W,8);
+
+  // Logo
+  const logoImg = await loadImage(document.querySelector('.logo img').src);
+  if(logoImg){
+    const lh=60, lw=logoImg.width*(lh/logoImg.height);
+    ctx.drawImage(logoImg, 54, 70, lw, lh);
+  }
+
+  // Wappen
+  const wappenSrc = WAPPEN[code];
+  if(wappenSrc){
+    const wImg = await loadImage(wappenSrc);
+    if(wImg){
+      const wSize=120;
+      ctx.drawImage(wImg, W-54-wSize, 40, wSize, wSize);
+    }
+  }
+
+  // Kantonsname
+  ctx.fillStyle='#fff';
+  ctx.font='800 52px Open Sans, sans-serif';
+  ctx.textAlign='left';
+  ctx.fillText(c.name, 54, 175);
+
+  // Score gross
+  const scoreY=270;
+  ctx.textAlign='center';
+  ctx.fillStyle='#fff';
+  ctx.fillStyle=colC(c.score);
+  ctx.font='800 120px Open Sans, sans-serif';
+  ctx.fillText(c.score.toFixed(0)+'%', W/2, scoreY+100);
+  ctx.fillStyle='#7A8F6E';
+  ctx.font='700 28px Open Sans, sans-serif';
+  ctx.fillText('QUALITÄTSSCORE', W/2, scoreY+145);
+
+  // Defi-Anzahl
+  ctx.fillStyle='#2C4A1E';
+  ctx.font='700 28px Open Sans, sans-serif';
+  ctx.fillText(fmt(c.total)+' Defibrillatoren erfasst', W/2, scoreY+195);
+
+  // Trennlinie
+  ctx.strokeStyle='#C8DDB8';
+  ctx.lineWidth=2;
+  ctx.beginPath();
+  ctx.moveTo(54, scoreY+220); ctx.lineTo(W-54, scoreY+220);
+  ctx.stroke();
+
+  // Attribut-Balken
+  const barY=scoreY+250;
+  const attrs=ATTRS;
+  const cols=2, rows=Math.ceil(attrs.length/cols);
+  const colW=(W-108)/cols;
+  const bH=18, rowH=72;
+
+  attrs.forEach((a,i)=>{
+    const col=i%cols, row=Math.floor(i/cols);
+    const x=54+col*colW, y=barY+row*rowH;
+    const pct=c.total>0?(c.counts[a.key]/c.total)*100:0;
+    const cls=pctC(pct);
+
+    ctx.fillStyle='#1A2614';
+    ctx.font='700 20px Open Sans, sans-serif';
+    ctx.textAlign='left';
+    ctx.fillText(a.label, x, y+18);
+
+    drawBar(ctx, x, y+26, colW-80, bH, pct, cls);
+
+    ctx.fillStyle=colC(pct);
+    ctx.font='800 22px Open Sans, sans-serif';
+    ctx.textAlign='right';
+    ctx.fillText(pct.toFixed(0)+'%', x+colW-10, y+42);
+  });
+
+  // Footer
+  ctx.fillStyle='#2C4A1E';
+  ctx.fillRect(0,H-80,W,80);
+  ctx.fillStyle='rgba(255,255,255,0.5)';
+  ctx.font='600 22px Open Sans, sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText('defikarte.ch · Daten: OpenStreetMap', W/2, H-28);
+}
+
+async function generateGraphic(){
+  const type = document.getElementById('export-type').value;
+  const canvas = document.getElementById('export-canvas');
+  const ctx = canvas.getContext('2d');
+  const preview = document.getElementById('export-preview');
+
+  // Warten-Feedback
+  const btn = document.querySelector('.export-btn');
+  btn.textContent='⏳ Wird generiert…';
+  btn.disabled=true;
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  if(type==='overview'){
+    await drawOverview(ctx, canvas);
+    document.getElementById('dl-btn').download='defikarte-schweiz.png';
+  } else {
+    const code = document.getElementById('export-canton').value;
+    const canton = allData.find(d=>d.code===code);
+    await drawCanton(ctx, canvas, code);
+    document.getElementById('dl-btn').download=`defikarte-${code}.png`;
+  }
+
+  // Download-Link setzen
+  document.getElementById('dl-btn').href = canvas.toDataURL('image/png');
+  preview.classList.add('visible');
+
+  btn.textContent='🖼 Grafik generieren';
+  btn.disabled=false;
+
+  preview.scrollIntoView({behavior:'smooth', block:'nearest'});
 }
 
 loadAll();
