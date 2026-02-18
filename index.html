@@ -622,7 +622,7 @@
 
     <div class="ranking-section">
       <div class="section-head">
-        <h2>Kantons-Rankliste</h2>
+        <h2>Kantonsranking</h2>
         <span class="section-sub" id="ranking-sub"></span>
       </div>
       <div class="ranking-box">
@@ -767,9 +767,13 @@ function analyzeFeatures(features){
   if(!total) return null;
   const counts={};
   ATTRS.forEach(a=>{ counts[a.key]=features.filter(f=>f.properties&&hasAttr(f.properties,a.key)).length; });
+  
+  // Zähle 24/7 Verfügbarkeit separat
+  const count247 = features.filter(f => f.properties && f.properties.opening_hours === '24/7').length;
+  
   let wSum=0;
   ATTRS.forEach(a=>{ wSum+=(counts[a.key]/total)*(WEIGHTS[a.key]||1); });
-  return {total,counts,score:(wSum/TOTAL_W)*100};
+  return {total,counts,score:(wSum/TOTAL_W)*100,count247};
 }
 
 async function loadCanton(canton){
@@ -815,7 +819,10 @@ function renderDashboard(){
   const totalDefis=allData.reduce((s,c)=>s+c.total,0);
   const avgScore=allData.reduce((s,c)=>s+c.score,0)/allData.length;
   const bestCanton=[...allData].sort((a,b)=>b.score-a.score)[0];
-  const worstCanton=[...allData].sort((a,b)=>a.score-b.score)[0];
+  
+  // Berechne 24/7 Verfügbarkeit
+  const total247 = allData.reduce((sum, c) => sum + (c.count247 || 0), 0);
+  const pct247 = totalDefis > 0 ? (total247 / totalDefis) * 100 : 0;
 
   document.getElementById('hero-meta').style.display='block';
   document.getElementById('meta-total').textContent=fmt(totalDefis);
@@ -846,10 +853,10 @@ function renderDashboard(){
       <div class="kpi-label">Bester Kanton</div>
       <div class="kpi-sub">${bestCanton.name} · ${fmt(bestCanton.total)} Defis</div>
     </div>
-    <div class="kpi-item warn fade-in">
-      <div class="kpi-number">${worstCanton.score.toFixed(0)}%</div>
-      <div class="kpi-label">Kanton mit Lücken</div>
-      <div class="kpi-sub">${worstCanton.name} · ${fmt(worstCanton.total)} Defis</div>
+    <div class="kpi-item fade-in">
+      <div class="kpi-number" style="color:var(--green-btn)">${pct247.toFixed(0)}%</div>
+      <div class="kpi-label">24/7 Verfügbarkeit</div>
+      <div class="kpi-sub">${fmt(total247)} von ${fmt(totalDefis)} Defis</div>
     </div>`;
 
   const grandTotal=totalDefis;
