@@ -777,7 +777,7 @@ function analyzeFeatures(features){
 }
 
 async function loadCanton(canton){
-  const url=`${CDN}defis_kt_${canton.code}.geojson`;
+  const url=`${CDN}defis_kt_${canton.code}.geojson?t=${Date.now()}`;
   try{
     const res=await fetch(url);
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
