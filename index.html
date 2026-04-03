@@ -642,6 +642,7 @@
                 <th>Kanton</th>
                 <th class="right">Defis</th>
                 <th class="center">Score</th>
+                <th class="right">24/7</th>
                 <th class="right">Standort</th>
                 <th class="right">Betreiber</th>
                 <th class="right">Öffnungszeiten</th>
@@ -898,12 +899,22 @@ function renderTable(){
     const rnk=i===0?'gold':i===1?'silver':i===2?'bronze':'';
     const scoreCls=pctClass(c.score);
     const bar=(key)=>{
-      const pct=c.total>0?(c.counts[key]/c.total)*100:0;
+      let pct, count, total;
+      if(key === 'count247'){
+        // Spezielle Behandlung für 24/7
+        count = c.count247 || 0;
+        total = c.total;
+        pct = total > 0 ? (count / total) * 100 : 0;
+      } else {
+        count = c.counts[key] || 0;
+        total = c.total;
+        pct = total > 0 ? (count / total) * 100 : 0;
+      }
       const bc=pctClass(pct);
       const col=bc==='good'?'var(--green-btn)':bc==='warn'?'var(--warn)':'var(--danger)';
       return `<div class="mini-wrap">
         <div class="mini-bg"><div class="mini-fill" style="width:${pct}%;background:${col}"></div></div>
-        <span class="mini-val ${bc}">${pct.toFixed(0)}%</span>
+        <span class="mini-val ${bc}">${pct.toFixed(0)}% <small>(${fmt(count)})</small></span>
       </div>`;
     };
 
@@ -933,13 +944,14 @@ function renderTable(){
       </div></td>
       <td class="right"><span class="count-big">${fmt(c.total)}</span></td>
       <td class="center"><span class="score-big ${scoreCls}">${c.score.toFixed(0)}%</span></td>
+      <td>${bar('count247')}</td>
       <td>${bar('defibrillator:location')}</td>
       <td>${bar('operator')}</td>
       <td>${bar('opening_hours')}</td>
       <td>${bar('access')}</td>
     </tr>
     <tr class="detail-row">
-      <td colspan="7">
+      <td colspan="8">
         <div class="detail-inner" id="detail-${c.code}">
           <div class="detail-content">${detailAttrs}</div>
         </div>
@@ -1154,13 +1166,32 @@ async function drawOverview(ctx, canvas){
   ctx.font='800 30px Open Sans, sans-serif';
   ctx.fillText('Vollständigkeit der Kernattribute', 54, barY);
 
-  const attrs = ATTRS.slice(0,8); // max 8 für Platz
   const bH=28, bGap=52, barX=54, barW=W-108-160;
+  
+  // 24/7 Verfügbarkeit als erster Balken
+  const pct247 = totalDefis > 0 ? (total247 / totalDefis) * 100 : 0;
+  const cls247 = pctC(pct247);
+  const y247 = barY + 40;
+  
+  ctx.fillStyle='#1A2614';
+  ctx.font='600 22px Open Sans, sans-serif';
+  ctx.textAlign='left';
+  ctx.fillText('24/7 Verfügbarkeit', barX, y247+20);
+  
+  drawBar(ctx, barX, y247+28, barW, bH, pct247, cls247);
+  
+  ctx.fillStyle=colC(pct247);
+  ctx.font='800 24px Open Sans, sans-serif';
+  ctx.textAlign='right';
+  ctx.fillText(pct247.toFixed(0)+'% ('+fmt(total247)+')', W-54, y247+48);
+
+  // Restliche Attribute (nur noch 7 statt 8)
+  const attrs = ATTRS.slice(0,7);
   attrs.forEach((a,i)=>{
     const count=allData.reduce((s,c)=>s+(c.counts[a.key]||0),0);
     const pct=grandTotal>0?(count/grandTotal)*100:0;
     const cls=pctC(pct);
-    const y = barY+40 + i*bGap;
+    const y = y247 + bGap + i*bGap;
 
     // Label
     ctx.fillStyle='#1A2614';
@@ -1251,7 +1282,23 @@ async function drawCanton(ctx, canvas, code){
 
   // Attribut-Balken
   const barY=scoreY+250;
-  const attrs=ATTRS;
+  
+  // Erstelle erweiterte Attribut-Liste mit 24/7 am Anfang
+  const pct247canton = c.total > 0 ? ((c.count247 || 0) / c.total) * 100 : 0;
+  const attr247 = {
+    key: 'count247',
+    label: '24/7 Verfügbarkeit',
+    pct: pct247canton,
+    count: c.count247 || 0
+  };
+  
+  const attrs = [attr247, ...ATTRS.map(a => ({
+    key: a.key,
+    label: a.label,
+    pct: c.total > 0 ? ((c.counts[a.key] || 0) / c.total) * 100 : 0,
+    count: c.counts[a.key] || 0
+  }))];
+  
   const cols=2, rows=Math.ceil(attrs.length/cols);
   const colW=(W-108)/cols;
   const bH=18, rowH=72;
@@ -1259,7 +1306,7 @@ async function drawCanton(ctx, canvas, code){
   attrs.forEach((a,i)=>{
     const col=i%cols, row=Math.floor(i/cols);
     const x=54+col*colW, y=barY+row*rowH;
-    const pct=c.total>0?(c.counts[a.key]/c.total)*100:0;
+    const pct=a.pct;
     const cls=pctC(pct);
 
     ctx.fillStyle='#1A2614';
