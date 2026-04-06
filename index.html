@@ -305,6 +305,29 @@
     background: var(--bg);
     white-space: nowrap;
   }
+  thead th.sortable {
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.15s;
+  }
+  thead th.sortable:hover {
+    background: var(--green-pale);
+    color: var(--green-btn);
+  }
+  thead th.sortable.active {
+    color: var(--green-dark);
+    font-weight: 800;
+  }
+  .sort-indicator {
+    display: inline-block;
+    margin-left: 4px;
+    font-size: 10px;
+    opacity: 0.3;
+    transition: opacity 0.15s;
+  }
+  thead th.sortable.active .sort-indicator {
+    opacity: 1;
+  }
   thead th.right  { text-align: right; }
   thead th.center { text-align: center; }
 
@@ -603,6 +626,16 @@
 
     <div id="notice-area"></div>
 
+    <div class="kpi-band" id="kpi-band"></div>
+
+    <div class="attr-section">
+      <div class="section-head">
+        <h2>Vollständigkeit der Kernattribute</h2>
+        <span class="section-sub">Schweizweit aggregiert</span>
+      </div>
+      <div class="attr-grid" id="attr-grid"></div>
+    </div>
+
     <!-- CTA BANNER -->
     <div class="cta-banner">
       <div class="cta-text">
@@ -613,16 +646,6 @@
         <a class="cta-btn primary" href="https://defikarte.ch" target="_blank">Defi erfassen / korrigieren</a>
         <a class="cta-btn secondary" href="https://www.openstreetmap.org" target="_blank">OpenStreetMap öffnen</a>
       </div>
-    </div>
-
-    <div class="kpi-band" id="kpi-band"></div>
-
-    <div class="attr-section">
-      <div class="section-head">
-        <h2>Vollständigkeit der Kernattribute</h2>
-        <span class="section-sub">Schweizweit aggregiert</span>
-      </div>
-      <div class="attr-grid" id="attr-grid"></div>
     </div>
 
     <div class="ranking-section">
@@ -644,14 +667,14 @@
           <table>
             <thead>
               <tr>
-                <th>Kanton</th>
-                <th class="right">Defis</th>
-                <th class="center">Score</th>
-                <th class="right">24/7</th>
-                <th class="right">Standort</th>
-                <th class="right">Betreiber</th>
-                <th class="right">Öffnungszeiten</th>
-                <th class="right">Zugänglichkeit</th>
+                <th onclick="sortBy('name',this)" class="sortable">Kanton <span class="sort-indicator"></span></th>
+                <th class="right sortable" onclick="sortBy('total',this)">Defis <span class="sort-indicator"></span></th>
+                <th class="center sortable active" onclick="sortBy('score',this)">Score <span class="sort-indicator">↓</span></th>
+                <th class="right sortable" onclick="sortBy('count247',this)">24/7 <span class="sort-indicator"></span></th>
+                <th class="right sortable" onclick="sortBy('location',this)">Standort <span class="sort-indicator"></span></th>
+                <th class="right sortable" onclick="sortBy('operator',this)">Betreiber <span class="sort-indicator"></span></th>
+                <th class="right sortable" onclick="sortBy('hours',this)">Öffnungszeiten <span class="sort-indicator"></span></th>
+                <th class="right sortable" onclick="sortBy('access',this)">Zugänglichkeit <span class="sort-indicator"></span></th>
               </tr>
             </thead>
             <tbody id="ranking-body"></tbody>
@@ -762,7 +785,7 @@ const WEIGHTS = {
 };
 const TOTAL_W = Object.values(WEIGHTS).reduce((a,b)=>a+b,0);
 
-let allData=[], failedCantons=[], currentSort='score';
+let allData=[], failedCantons=[], currentSort='score', sortDirection='desc';
 
 function hasAttr(props,key){ const v=props[key]; return v!==undefined&&v!==null&&v!==''; }
 function pctClass(p){ return p>=85?'good':p>=55?'warn':'danger'; }
@@ -890,19 +913,27 @@ function renderDashboard(){
 
 function renderTable(){
   const p=(d,key)=>d.total>0?d.counts[key]/d.total:0;
+  const p247=(d)=>d.total>0?((d.count247||0)/d.total):0;
+  
   const sorted=[...allData].sort((a,b)=>{
-    if(currentSort==='score')    return b.score-a.score;
-    if(currentSort==='total')    return b.total-a.total;
-    if(currentSort==='location') return p(b,'defibrillator:location')-p(a,'defibrillator:location');
-    if(currentSort==='operator') return p(b,'operator')-p(a,'operator');
-    if(currentSort==='hours')    return p(b,'opening_hours')-p(a,'opening_hours');
-    if(currentSort==='access')   return p(b,'access')-p(a,'access');
-    return 0;
+    let result = 0;
+    
+    if(currentSort==='name')       result = a.name.localeCompare(b.name);
+    else if(currentSort==='score') result = b.score-a.score;
+    else if(currentSort==='total') result = b.total-a.total;
+    else if(currentSort==='count247') result = p247(b)-p247(a);
+    else if(currentSort==='location') result = p(b,'defibrillator:location')-p(a,'defibrillator:location');
+    else if(currentSort==='operator') result = p(b,'operator')-p(a,'operator');
+    else if(currentSort==='hours')    result = p(b,'opening_hours')-p(a,'opening_hours');
+    else if(currentSort==='access')   result = p(b,'access')-p(a,'access');
+    
+    return sortDirection === 'asc' ? -result : result;
   });
 
   document.getElementById('ranking-body').innerHTML=sorted.map((c,i)=>{
     const rnk=i===0?'gold':i===1?'silver':i===2?'bronze':'';
     const scoreCls=pctClass(c.score);
+    
     const bar=(key)=>{
       let pct, count, total;
       if(key === 'count247'){
@@ -990,10 +1021,36 @@ function toggleDetail(id, row){
   }
 }
 
-function sortBy(key,btn){
-  currentSort=key;
+function sortBy(key,element){
+  // Toggle direction if clicking same column
+  if(currentSort === key) {
+    sortDirection = sortDirection === 'desc' ? 'asc' : 'desc';
+  } else {
+    currentSort = key;
+    sortDirection = 'desc'; // Default to descending for new column
+  }
+  
+  // Update active states and arrows
   document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
+  document.querySelectorAll('thead th.sortable').forEach(th=>{
+    th.classList.remove('active');
+    const indicator = th.querySelector('.sort-indicator');
+    if(indicator) indicator.textContent = '';
+  });
+  
+  // Set active state and arrow
+  if(element) {
+    if(element.classList.contains('sort-btn')) {
+      element.classList.add('active');
+    } else if(element.tagName === 'TH') {
+      element.classList.add('active');
+      const indicator = element.querySelector('.sort-indicator');
+      if(indicator) {
+        indicator.textContent = sortDirection === 'desc' ? '↓' : '↑';
+      }
+    }
+  }
+  
   renderTable();
 }
 
@@ -1028,7 +1085,7 @@ function roundRect(ctx, x, y, w, h, r){
 }
 
 function drawBar(ctx, x, y, w, h, pct, cls){
-  const col = cls==="good"?"#4A7C2F": cls==="warn"?"#C96A00":"#B83232";
+  const col = cls==="good"?"#97C568": cls==="warn"?"#C96A00":"#B83232";
   ctx.fillStyle = "#C8DDB8";
   roundRect(ctx, x, y, w, h, h/2); ctx.fill();
   if(pct > 0){
@@ -1038,7 +1095,7 @@ function drawBar(ctx, x, y, w, h, pct, cls){
 }
 
 function pctC(p){ return p>=85?"good":p>=55?"warn":"danger"; }
-function colC(p){ return p>=85?"#4A7C2F":p>=55?"#C96A00":"#B83232"; }
+function colC(p){ return p>=85?"#97C568":p>=55?"#C96A00":"#B83232"; }
 
 async function loadImage(src){
   return new Promise((res,rej)=>{
@@ -1080,7 +1137,7 @@ function roundRect(ctx, x, y, w, h, r){
 }
 
 function drawBar(ctx, x, y, w, h, pct, cls){
-  const col = cls==='good'?'#4A7C2F': cls==='warn'?'#C96A00':'#B83232';
+  const col = cls==='good'?'#97C568': cls==='warn'?'#C96A00':'#B83232';
   // Hintergrund
   ctx.fillStyle = '#C8DDB8';
   roundRect(ctx, x, y, w, h, h/2); ctx.fill();
@@ -1092,7 +1149,7 @@ function drawBar(ctx, x, y, w, h, pct, cls){
 }
 
 function pctC(p){ return p>=85?'good':p>=55?'warn':'danger'; }
-function colC(p){ return p>=85?'#4A7C2F':p>=55?'#C96A00':'#B83232'; }
+function colC(p){ return p>=85?'#97C568':p>=55?'#C96A00':'#B83232'; }
 
 async function loadImage(src){
   return new Promise((res,rej)=>{
@@ -1115,7 +1172,7 @@ async function drawOverview(ctx, canvas){
   ctx.fillRect(0,0,W,H);
 
   // Header-Band
-  ctx.fillStyle = '#2C4A1E';
+  ctx.fillStyle = '#144430';
   ctx.fillRect(0,0,W,180);
 
   // Logo laden & zeichnen
@@ -1135,7 +1192,7 @@ async function drawOverview(ctx, canvas){
   ctx.fillText(new Date().toLocaleDateString('de-CH'), W-54, 136);
 
   // Grüner Akzentstreifen
-  ctx.fillStyle='#4A7C2F';
+  ctx.fillStyle='#97C568';
   ctx.fillRect(0,180,W,8);
 
   // Grosse KPI-Zahlen
@@ -1152,10 +1209,10 @@ async function drawOverview(ctx, canvas){
     // Box
     ctx.fillStyle='#fff';
     roundRect(ctx, 54+i*kpiW, kpiY, kpiW-16, 150, 12); ctx.fill();
-    ctx.fillStyle='#4A7C2F';
+    ctx.fillStyle='#97C568';
     roundRect(ctx, 54+i*kpiW, kpiY, kpiW-16, 6, 3); ctx.fill();
     // Zahl
-    ctx.fillStyle='#2C4A1E';
+    ctx.fillStyle='#144430';
     ctx.font='800 56px Open Sans, sans-serif';
     ctx.fillText(k.val, x-8, kpiY+90);
     // Label
@@ -1167,7 +1224,7 @@ async function drawOverview(ctx, canvas){
   // Attribut-Balken
   const barY = 430;
   ctx.textAlign='left';
-  ctx.fillStyle='#2C4A1E';
+  ctx.fillStyle='#144430';
   ctx.font='800 30px Open Sans, sans-serif';
   ctx.fillText('Vollständigkeit der Kernattribute', 54, barY);
 
@@ -1178,7 +1235,7 @@ async function drawOverview(ctx, canvas){
   const cls247 = pctC(pct247);
   const y247 = barY + 40;
   
-  ctx.fillStyle='#1A2614';
+  ctx.fillStyle='#144430';
   ctx.font='600 22px Open Sans, sans-serif';
   ctx.textAlign='left';
   ctx.fillText('24/7 Verfügbarkeit', barX, y247+20);
@@ -1199,7 +1256,7 @@ async function drawOverview(ctx, canvas){
     const y = y247 + bGap + i*bGap;
 
     // Label
-    ctx.fillStyle='#1A2614';
+    ctx.fillStyle='#144430';
     ctx.font='600 22px Open Sans, sans-serif';
     ctx.textAlign='left';
     ctx.fillText(a.label, barX, y+20);
@@ -1215,7 +1272,7 @@ async function drawOverview(ctx, canvas){
   });
 
   // Footer
-  ctx.fillStyle='#2C4A1E';
+  ctx.fillStyle='#144430';
   ctx.fillRect(0,H-80,W,80);
   ctx.fillStyle='rgba(255,255,255,0.5)';
   ctx.font='600 22px Open Sans, sans-serif';
@@ -1234,9 +1291,9 @@ async function drawCanton(ctx, canvas, code){
   ctx.fillRect(0,0,W,H);
 
   // Header
-  ctx.fillStyle='#2C4A1E';
+  ctx.fillStyle='#144430';
   ctx.fillRect(0,0,W,200);
-  ctx.fillStyle='#4A7C2F';
+  ctx.fillStyle='#97C568';
   ctx.fillRect(0,200,W,8);
 
   // Logo
@@ -1274,7 +1331,7 @@ async function drawCanton(ctx, canvas, code){
   ctx.fillText('QUALITÄTSSCORE', W/2, scoreY+145);
 
   // Defi-Anzahl
-  ctx.fillStyle='#2C4A1E';
+  ctx.fillStyle='#144430';
   ctx.font='700 28px Open Sans, sans-serif';
   ctx.fillText(fmt(c.total)+' Defibrillatoren erfasst', W/2, scoreY+195);
 
@@ -1314,7 +1371,7 @@ async function drawCanton(ctx, canvas, code){
     const pct=a.pct;
     const cls=pctC(pct);
 
-    ctx.fillStyle='#1A2614';
+    ctx.fillStyle='#144430';
     ctx.font='700 20px Open Sans, sans-serif';
     ctx.textAlign='left';
     ctx.fillText(a.label, x, y+18);
@@ -1328,7 +1385,7 @@ async function drawCanton(ctx, canvas, code){
   });
 
   // Footer
-  ctx.fillStyle='#2C4A1E';
+  ctx.fillStyle='#144430';
   ctx.fillRect(0,H-80,W,80);
   ctx.fillStyle='rgba(255,255,255,0.5)';
   ctx.font='600 22px Open Sans, sans-serif';
