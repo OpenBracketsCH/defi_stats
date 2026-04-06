@@ -253,6 +253,25 @@
   .attr-missing.warn   { background: var(--warn-bg);    color: var(--warn); }
   .attr-missing.danger { background: var(--danger-bg);  color: var(--danger); }
 
+  /* ── WACHSTUMS-GRAFIK ────────────────────────────────── */
+  .growth-section { margin-bottom: 48px; }
+  .growth-chart-container {
+    background: var(--bg-white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px 24px;
+    box-shadow: var(--shadow-md);
+  }
+  #growth-chart {
+    width: 100%;
+    height: 400px;
+    max-height: 400px;
+  }
+  @media(max-width:700px){
+    #growth-chart { height: 300px; }
+    .growth-chart-container { padding: 20px 16px; }
+  }
+
   /* ── RANKING ─────────────────────────────────────────── */
   .ranking-section { margin-bottom: 48px; }
   .ranking-box {
@@ -636,6 +655,17 @@
       <div class="attr-grid" id="attr-grid"></div>
     </div>
 
+    <!-- WACHSTUMS-GRAFIK -->
+    <div class="growth-section">
+      <div class="section-head">
+        <h2>Wachstum seit 2020</h2>
+        <span class="section-sub">Monatliche Entwicklung der Defibrillator-Anzahl</span>
+      </div>
+      <div class="growth-chart-container">
+        <canvas id="growth-chart"></canvas>
+      </div>
+    </div>
+
     <!-- CTA BANNER -->
     <div class="cta-banner">
       <div class="cta-text">
@@ -909,6 +939,7 @@ function renderDashboard(){
 
   document.getElementById('ranking-sub').textContent=`${allData.length} Kantone · sortierbar`;
   renderTable();
+  renderGrowthChart(totalDefis);
 }
 
 function renderTable(){
@@ -1019,6 +1050,225 @@ function toggleDetail(id, row){
   if(!isOpen){
     setTimeout(()=>{ detail.closest('tr').scrollIntoView({behavior:'smooth',block:'nearest'}); },50);
   }
+}
+
+// ── WACHSTUMS-GRAFIK ─────────────────────────────────────────────────────────
+function renderGrowthChart(currentTotal){
+  const canvas = document.getElementById('growth-chart');
+  if(!canvas) return;
+  
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.scale(dpr, dpr);
+  
+  const W = rect.width;
+  const H = rect.height;
+  
+  // Historische Daten (aus Excel)
+  const historicalData = [{"date":"2020-03-01","count":2200},{"date":"2020-08-13","count":3463},{"date":"2020-11-10","count":4000},{"date":"2021-03-23","count":4954},{"date":"2021-08-01","count":5816},{"date":"2021-09-01","count":6142},{"date":"2021-10-01","count":6309},{"date":"2021-12-01","count":6828},{"date":"2022-01-01","count":7117},{"date":"2022-02-01","count":7260},{"date":"2022-03-01","count":7473},{"date":"2022-04-01","count":7675},{"date":"2022-05-01","count":7863},{"date":"2022-06-01","count":8035},{"date":"2022-07-01","count":8168},{"date":"2022-08-01","count":8484},{"date":"2022-09-01","count":8601},{"date":"2022-10-01","count":8774},{"date":"2022-11-01","count":8931},{"date":"2022-12-01","count":9082},{"date":"2023-01-01","count":9475},{"date":"2023-02-01","count":9703},{"date":"2023-03-01","count":9891},{"date":"2023-04-01","count":10895},{"date":"2023-05-01","count":11103},{"date":"2023-06-01","count":11314},{"date":"2023-07-01","count":11420},{"date":"2023-08-01","count":11655},{"date":"2023-09-01","count":11767},{"date":"2023-10-01","count":11882},{"date":"2023-11-01","count":12044},{"date":"2023-12-01","count":12123},{"date":"2024-01-01","count":12341},{"date":"2024-02-01","count":12513},{"date":"2024-03-01","count":12662},{"date":"2024-04-01","count":12892},{"date":"2024-05-01","count":13068},{"date":"2024-06-01","count":13290},{"date":"2024-07-01","count":13445},{"date":"2024-08-01","count":13565},{"date":"2024-09-01","count":13706},{"date":"2024-10-01","count":13811},{"date":"2024-11-01","count":14022},{"date":"2024-12-01","count":14203},{"date":"2025-01-01","count":14380},{"date":"2025-02-01","count":14540},{"date":"2025-03-01","count":14693},{"date":"2025-04-01","count":14829},{"date":"2025-05-01","count":14956},{"date":"2025-06-01","count":15087},{"date":"2025-07-01","count":15204},{"date":"2025-08-01","count":15325},{"date":"2025-09-01","count":15442},{"date":"2025-10-01","count":15584},{"date":"2025-11-01","count":15718},{"date":"2025-12-01","count":15824},{"date":"2026-01-01","count":15849},{"date":"2026-02-01","count":16047},{"date":"2026-03-01","count":16169},{"date":"2026-04-01","count":16353}];
+  
+  // Füge aktuellen Datenpunkt hinzu falls neuer als letzter historischer
+  const lastHistorical = historicalData[historicalData.length - 1];
+  const today = new Date().toISOString().split('T')[0];
+  if(today > lastHistorical.date && currentTotal > lastHistorical.count){
+    historicalData.push({date: today, count: currentTotal});
+  }
+  
+  const data = historicalData;
+  const minCount = Math.min(...data.map(d=>d.count));
+  const maxCount = Math.max(...data.map(d=>d.count));
+  
+  // Padding
+  const pad = {top: 40, right: 60, bottom: 50, left: 60};
+  const chartW = W - pad.left - pad.right;
+  const chartH = H - pad.top - pad.bottom;
+  
+  // Scales
+  const scaleX = (i) => pad.left + (i / (data.length - 1)) * chartW;
+  const scaleY = (count) => pad.top + chartH - ((count - minCount) / (maxCount - minCount)) * chartH;
+  
+  // Store points for interactivity
+  const points = data.map((d, i) => ({
+    x: scaleX(i),
+    y: scaleY(d.count),
+    date: d.date,
+    count: d.count,
+    index: i
+  }));
+  
+  // Draw function
+  const draw = (hoveredPoint = null) => {
+    // Background
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, W, H);
+    
+    // Grid lines (horizontal)
+    ctx.strokeStyle = '#E8E8E8';
+    ctx.lineWidth = 1;
+    const gridSteps = 5;
+    for(let i = 0; i <= gridSteps; i++){
+      const y = pad.top + (i / gridSteps) * chartH;
+      ctx.beginPath();
+      ctx.moveTo(pad.left, y);
+      ctx.lineTo(W - pad.right, y);
+      ctx.stroke();
+      
+      // Y-axis labels
+      const val = maxCount - (i / gridSteps) * (maxCount - minCount);
+      ctx.fillStyle = '#7A8F6E';
+      ctx.font = '12px Open Sans, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(Math.round(val).toLocaleString('de-CH'), pad.left - 10, y + 4);
+    }
+    
+    // Area fill
+    ctx.fillStyle = 'rgba(151, 197, 104, 0.1)';
+    ctx.beginPath();
+    ctx.moveTo(scaleX(0), scaleY(data[0].count));
+    data.forEach((d, i) => {
+      ctx.lineTo(scaleX(i), scaleY(d.count));
+    });
+    ctx.lineTo(scaleX(data.length - 1), pad.top + chartH);
+    ctx.lineTo(scaleX(0), pad.top + chartH);
+    ctx.closePath();
+    ctx.fill();
+    
+    // Line
+    ctx.strokeStyle = '#97C568';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(scaleX(0), scaleY(data[0].count));
+    data.forEach((d, i) => {
+      ctx.lineTo(scaleX(i), scaleY(d.count));
+    });
+    ctx.stroke();
+    
+    // Data points
+    points.forEach(p => {
+      const isHovered = hoveredPoint && p.index === hoveredPoint.index;
+      const radius = isHovered ? 7 : 5;
+      
+      ctx.fillStyle = '#FFFFFF';
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, radius, 0, 2 * Math.PI);
+      ctx.fill();
+      
+      ctx.strokeStyle = isHovered ? '#144430' : '#97C568';
+      ctx.lineWidth = isHovered ? 3 : 2;
+      ctx.stroke();
+    });
+    
+    // Tooltip
+    if(hoveredPoint){
+      const p = hoveredPoint;
+      const dateFormatted = new Date(p.date).toLocaleDateString('de-CH', {year: 'numeric', month: 'long'});
+      const countFormatted = p.count.toLocaleString('de-CH');
+      
+      // Tooltip box
+      const tooltipText = `${dateFormatted}: ${countFormatted} Defis`;
+      ctx.font = '600 13px Open Sans, sans-serif';
+      const textWidth = ctx.measureText(tooltipText).width;
+      const tooltipW = textWidth + 20;
+      const tooltipH = 32;
+      
+      let tooltipX = p.x - tooltipW / 2;
+      let tooltipY = p.y - tooltipH - 15;
+      
+      // Keep tooltip in bounds
+      if(tooltipX < pad.left) tooltipX = pad.left;
+      if(tooltipX + tooltipW > W - pad.right) tooltipX = W - pad.right - tooltipW;
+      if(tooltipY < pad.top) tooltipY = p.y + 20;
+      
+      // Draw tooltip
+      ctx.fillStyle = '#144430';
+      ctx.beginPath();
+      ctx.roundRect(tooltipX, tooltipY, tooltipW, tooltipH, 6);
+      ctx.fill();
+      
+      // Tooltip arrow
+      ctx.beginPath();
+      ctx.moveTo(p.x - 6, tooltipY < p.y ? tooltipY : tooltipY + tooltipH);
+      ctx.lineTo(p.x, tooltipY < p.y ? tooltipY - 6 : tooltipY + tooltipH + 6);
+      ctx.lineTo(p.x + 6, tooltipY < p.y ? tooltipY : tooltipY + tooltipH);
+      ctx.closePath();
+      ctx.fill();
+      
+      ctx.fillStyle = '#FFFFFF';
+      ctx.textAlign = 'center';
+      ctx.fillText(tooltipText, tooltipX + tooltipW / 2, tooltipY + tooltipH / 2 + 4);
+    }
+    
+    // X-axis labels (nur Jahre)
+    ctx.fillStyle = '#7A8F6E';
+    ctx.font = '12px Open Sans, sans-serif';
+    ctx.textAlign = 'center';
+    
+    const years = [...new Set(data.map(d => d.date.substring(0, 4)))];
+    years.forEach(year => {
+      const firstIndex = data.findIndex(d => d.date.startsWith(year));
+      if(firstIndex >= 0){
+        const x = scaleX(firstIndex);
+        ctx.fillText(year, x, pad.top + chartH + 25);
+      }
+    });
+    
+    // Title
+    ctx.fillStyle = '#144430';
+    ctx.font = '600 14px Open Sans, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(`${minCount.toLocaleString('de-CH')} → ${maxCount.toLocaleString('de-CH')} Defibrillatoren`, pad.left, 25);
+  };
+  
+  // Initial draw
+  draw();
+  
+  // Mouse interaction
+  let currentHovered = null;
+  
+  canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    
+    // Find closest point
+    let hoveredPoint = null;
+    let minDist = 15; // Hit radius
+    
+    points.forEach(p => {
+      const dist = Math.sqrt((mouseX - p.x) ** 2 + (mouseY - p.y) ** 2);
+      if(dist < minDist){
+        minDist = dist;
+        hoveredPoint = p;
+      }
+    });
+    
+    if(hoveredPoint !== currentHovered){
+      currentHovered = hoveredPoint;
+      canvas.style.cursor = hoveredPoint ? 'pointer' : 'default';
+      draw(hoveredPoint);
+    }
+  });
+  
+  canvas.addEventListener('mouseleave', () => {
+    if(currentHovered){
+      currentHovered = null;
+      canvas.style.cursor = 'default';
+      draw();
+    }
+  });
+  
+  // Resize handler
+  let resizeTimeout;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      renderGrowthChart(currentTotal);
+    }, 200);
+  });
 }
 
 function sortBy(key,element){
