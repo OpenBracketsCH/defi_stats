@@ -1053,9 +1053,32 @@ function toggleDetail(id, row){
 }
 
 // ── WACHSTUMS-GRAFIK ─────────────────────────────────────────────────────────
-function renderGrowthChart(currentTotal){
+let chartData = null; // Cache für geladene Daten
+
+async function loadHistoricalData(){
+  // Versuche zuerst lokale JSON
+  try{
+    const res = await fetch('historical-data.json?t='+Date.now());
+    if(res.ok) return await res.json();
+  }catch(e){}
+  
+  // Versuche GitHub CDN
+  try{
+    const res = await fetch('https://cdn.jsdelivr.net/gh/OpenBracketsCH/defi_stats@main/historical-data.json?t='+Date.now());
+    if(res.ok) return await res.json();
+  }catch(e){}
+  
+  // Fallback: Eingebettete Daten
+  return [{"date":"2020-03-01","count":2200},{"date":"2020-08-13","count":3463},{"date":"2020-11-10","count":4000},{"date":"2021-03-23","count":4954},{"date":"2021-08-01","count":5816},{"date":"2021-09-01","count":6142},{"date":"2021-10-01","count":6309},{"date":"2021-12-01","count":6828},{"date":"2022-01-01","count":7117},{"date":"2022-02-01","count":7260},{"date":"2022-03-01","count":7473},{"date":"2022-04-01","count":7675},{"date":"2022-05-01","count":7863},{"date":"2022-06-01","count":8035},{"date":"2022-07-01","count":8168},{"date":"2022-08-01","count":8484},{"date":"2022-09-01","count":8601},{"date":"2022-10-01","count":8774},{"date":"2022-11-01","count":8931},{"date":"2022-12-01","count":9082},{"date":"2023-01-01","count":9475},{"date":"2023-02-01","count":9703},{"date":"2023-03-01","count":9891},{"date":"2023-04-01","count":10895},{"date":"2023-05-01","count":11103},{"date":"2023-06-01","count":11314},{"date":"2023-07-01","count":11420},{"date":"2023-08-01","count":11655},{"date":"2023-09-01","count":11767},{"date":"2023-10-01","count":11882},{"date":"2023-11-01","count":12044},{"date":"2023-12-01","count":12123},{"date":"2024-01-01","count":12341},{"date":"2024-02-01","count":12513},{"date":"2024-03-01","count":12662},{"date":"2024-04-01","count":12892},{"date":"2024-05-01","count":13068},{"date":"2024-06-01","count":13290},{"date":"2024-07-01","count":13445},{"date":"2024-08-01","count":13565},{"date":"2024-09-01","count":13706},{"date":"2024-10-01","count":13811},{"date":"2024-11-01","count":14022},{"date":"2024-12-01","count":14203},{"date":"2025-01-01","count":14380},{"date":"2025-02-01","count":14540},{"date":"2025-03-01","count":14693},{"date":"2025-04-01","count":14829},{"date":"2025-05-01","count":14956},{"date":"2025-06-01","count":15087},{"date":"2025-07-01","count":15204},{"date":"2025-08-01","count":15325},{"date":"2025-09-01","count":15442},{"date":"2025-10-01","count":15584},{"date":"2025-11-01","count":15718},{"date":"2025-12-01","count":15824},{"date":"2026-01-01","count":15849},{"date":"2026-02-01","count":16047},{"date":"2026-03-01","count":16169},{"date":"2026-04-01","count":16353},{"date":"2026-05-01","count":16532}];
+}
+
+async function renderGrowthChart(currentTotal){
   const canvas = document.getElementById('growth-chart');
   if(!canvas) return;
+  
+  // Lade historische Daten (einmal, dann Cache)
+  if(!chartData) chartData = await loadHistoricalData();
+  const historicalData = [...chartData]; // Kopie um Original nicht zu verändern
   
   const ctx = canvas.getContext('2d');
   const dpr = window.devicePixelRatio || 1;
@@ -1068,14 +1091,13 @@ function renderGrowthChart(currentTotal){
   const W = rect.width;
   const H = rect.height;
   
-  // Historische Daten (aus Excel)
-  const historicalData = [{"date":"2020-03-01","count":2200},{"date":"2020-08-13","count":3463},{"date":"2020-11-10","count":4000},{"date":"2021-03-23","count":4954},{"date":"2021-08-01","count":5816},{"date":"2021-09-01","count":6142},{"date":"2021-10-01","count":6309},{"date":"2021-12-01","count":6828},{"date":"2022-01-01","count":7117},{"date":"2022-02-01","count":7260},{"date":"2022-03-01","count":7473},{"date":"2022-04-01","count":7675},{"date":"2022-05-01","count":7863},{"date":"2022-06-01","count":8035},{"date":"2022-07-01","count":8168},{"date":"2022-08-01","count":8484},{"date":"2022-09-01","count":8601},{"date":"2022-10-01","count":8774},{"date":"2022-11-01","count":8931},{"date":"2022-12-01","count":9082},{"date":"2023-01-01","count":9475},{"date":"2023-02-01","count":9703},{"date":"2023-03-01","count":9891},{"date":"2023-04-01","count":10895},{"date":"2023-05-01","count":11103},{"date":"2023-06-01","count":11314},{"date":"2023-07-01","count":11420},{"date":"2023-08-01","count":11655},{"date":"2023-09-01","count":11767},{"date":"2023-10-01","count":11882},{"date":"2023-11-01","count":12044},{"date":"2023-12-01","count":12123},{"date":"2024-01-01","count":12341},{"date":"2024-02-01","count":12513},{"date":"2024-03-01","count":12662},{"date":"2024-04-01","count":12892},{"date":"2024-05-01","count":13068},{"date":"2024-06-01","count":13290},{"date":"2024-07-01","count":13445},{"date":"2024-08-01","count":13565},{"date":"2024-09-01","count":13706},{"date":"2024-10-01","count":13811},{"date":"2024-11-01","count":14022},{"date":"2024-12-01","count":14203},{"date":"2025-01-01","count":14380},{"date":"2025-02-01","count":14540},{"date":"2025-03-01","count":14693},{"date":"2025-04-01","count":14829},{"date":"2025-05-01","count":14956},{"date":"2025-06-01","count":15087},{"date":"2025-07-01","count":15204},{"date":"2025-08-01","count":15325},{"date":"2025-09-01","count":15442},{"date":"2025-10-01","count":15584},{"date":"2025-11-01","count":15718},{"date":"2025-12-01","count":15824},{"date":"2026-01-01","count":15849},{"date":"2026-02-01","count":16047},{"date":"2026-03-01","count":16169},{"date":"2026-04-01","count":16353}];
-  
-  // Füge aktuellen Datenpunkt hinzu falls neuer als letzter historischer
+  // Füge aktuellen Live-Datenpunkt hinzu
+  // Live-Punkt zeigt immer den heutigen Stand, sofern er nicht am selben Tag
+  // wie der letzte historische Eintrag liegt
   const lastHistorical = historicalData[historicalData.length - 1];
   const today = new Date().toISOString().split('T')[0];
-  if(today > lastHistorical.date && currentTotal > lastHistorical.count){
-    historicalData.push({date: today, count: currentTotal});
+  if(today !== lastHistorical.date){
+    historicalData.push({date: today, count: currentTotal, live: true});
   }
   
   const data = historicalData;
@@ -1097,7 +1119,8 @@ function renderGrowthChart(currentTotal){
     y: scaleY(d.count),
     date: d.date,
     count: d.count,
-    index: i
+    index: i,
+    live: d.live || false
   }));
   
   // Draw function
@@ -1150,14 +1173,23 @@ function renderGrowthChart(currentTotal){
     // Data points
     points.forEach(p => {
       const isHovered = hoveredPoint && p.index === hoveredPoint.index;
-      const radius = isHovered ? 7 : 5;
+      const isLive = p.live;
+      const radius = isHovered ? 7 : (isLive ? 6 : 5);
       
-      ctx.fillStyle = '#FFFFFF';
+      // Live-Punkt: Pulsierender Halo
+      if(isLive && !isHovered){
+        ctx.fillStyle = 'rgba(151, 197, 104, 0.25)';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 12, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+      
+      ctx.fillStyle = isLive ? '#97C568' : '#FFFFFF';
       ctx.beginPath();
       ctx.arc(p.x, p.y, radius, 0, 2 * Math.PI);
       ctx.fill();
       
-      ctx.strokeStyle = isHovered ? '#144430' : '#97C568';
+      ctx.strokeStyle = isHovered ? '#144430' : (isLive ? '#144430' : '#97C568');
       ctx.lineWidth = isHovered ? 3 : 2;
       ctx.stroke();
     });
@@ -1165,11 +1197,12 @@ function renderGrowthChart(currentTotal){
     // Tooltip
     if(hoveredPoint){
       const p = hoveredPoint;
-      const dateFormatted = new Date(p.date).toLocaleDateString('de-CH', {year: 'numeric', month: 'long'});
+      const dateFormatted = new Date(p.date).toLocaleDateString('de-CH', {year: 'numeric', month: 'long', day: p.live ? 'numeric' : undefined});
       const countFormatted = p.count.toLocaleString('de-CH');
       
       // Tooltip box
-      const tooltipText = `${dateFormatted}: ${countFormatted} Defis`;
+      const liveLabel = p.live ? ' · LIVE' : '';
+      const tooltipText = `${dateFormatted}: ${countFormatted} Defis${liveLabel}`;
       ctx.font = '600 13px Open Sans, sans-serif';
       const textWidth = ctx.measureText(tooltipText).width;
       const tooltipW = textWidth + 20;
