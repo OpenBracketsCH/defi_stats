@@ -1,147 +1,170 @@
-# Defibrillatoren LUKS-Einzugsgebiet – Auswertung
+# Defi-Report LUKS — Luzerner Kantonsspital
 
-Ein Reporting-Tool von [defikarte.ch](https://defikarte.ch) zur Auswertung der Defibrillator-Daten im Einzugsgebiet des **Luzerner Kantonsspitals (LUKS)** aus OpenStreetMap.
+Interaktiver Report zur Auswertung der Defibrillator-Daten im LUKS-Einzugsgebiet (Kantone Luzern, Uri, Nidwalden, Obwalden), erstellt in Zusammenarbeit mit dem Luzerner Kantonsspital (LUKS).
 
----
+## 🎯 Über den Report
 
-## Inhalt
+Der LUKS-Report zeigt eine detaillierte Übersicht aller in OpenStreetMap erfassten Defibrillatoren in den vier Zentralschweizer Kantonen, aufgeschlüsselt nach Gemeinden. Über Kanton-Tabs lassen sich die Kantone separat oder gemeinsam auswerten.
 
-| Datei | Beschreibung |
-|---|---|
-| `defi_report_luks.html` | Standalone Web-App für LU, UR, NW und OW |
+### Hauptfunktionen
 
----
+- **📊 Gemeindeübersicht**: Sortierbare Tabelle mit allen Gemeinden der 4 Kantone
+- **🗂️ Kanton-Tabs**: Filterung nach LU, UR, NW, OW oder alle
+- **🕐 24/7 Verfügbarkeit**: Auswertung rund um die Uhr erreichbarer Defibrillatoren
+- **📄 PDF-Export**: Report des aktiven Tabs als PDF
+- **📊 CSV-Export**: Defibrillatoren des aktiven Tabs als CSV (1 Zeile pro Defi)
+- **🔍 Suchfunktion**: Schnelle Suche nach Gemeinden
 
-## LUKS-Einzugsgebiet: 4 Kantone
+### Kennzahlen
 
-Das Tool lädt alle vier GeoJSON-Dateien **parallel** und stellt sie zusammen dar:
+- **Defibrillatoren total** (alle 4 Kantone)
+- Aufschlüsselung nach **LU / UR / NW / OW**
+- **24/7 erreichbare** Defibrillatoren
+- **Anzahl Gemeinden** mit mindestens einem Defibrillator
 
-| Kanton | Kürzel | GeoJSON-Datei |
-|---|---|---|
-| Luzern | LU | `defis_kt_lu.geojson` |
-| Uri | UR | `defis_kt_ur.geojson` |
-| Nidwalden | NW | `defis_kt_nw.geojson` |
-| Obwalden | OW | `defis_kt_ow.geojson` |
+## 🗺️ Abgedeckte Gemeinden
 
----
+| Kanton | Gemeinden |
+|--------|-----------|
+| **Luzern (LU)** | 67 |
+| **Uri (UR)** | 19 (Stand nach Fusionen 2021) |
+| **Nidwalden (NW)** | 11 |
+| **Obwalden (OW)** | 7 |
+| **Total** | 104 |
 
-## Tab-Navigation
+### Korrekturen und Fusionen
 
-Die App bietet **5 Tabs**:
+| OSM-Eintrag | Gemeinde | Bemerkung |
+|-------------|----------|-----------|
+| Amsteg | Silenen | Ortsteil von Silenen |
+| Bauen | Seedorf | Fusion 2021 |
+| Flüeli-Ranft | Sachseln | Ortsteil von Sachseln |
+| Kaiserstuhl OW | Kerns | Ortsteil von Kerns |
+| Emmetten | NW | Korrekt (nicht URI) |
+| Buochs | NW | Korrekt (nicht URI) |
+| Gersau | — | Gehört zu SZ, nicht im Report |
 
-| Tab | Inhalt |
-|---|---|
-| Alle Kantone | Gesamtübersicht mit farbigem Kanton-Badge |
-| Luzern | Nur LU-Gemeinden |
-| Uri | Nur UR-Gemeinden |
-| Nidwalden | Nur NW-Gemeinden |
-| Obwalden | Nur OW-Gemeinden |
+## 🗂️ Kanton-Tabs und CSV-Export
 
-Der **PDF-Export** folgt dem aktiv gewählten Tab. Im Gesamt-Tab enthält das PDF eine zusätzliche Kanton-Spalte.
+Der CSV-Export berücksichtigt den aktiven Tab:
 
----
+| Tab | CSV-Inhalt | Dateiname |
+|-----|-----------|-----------|
+| Alle Kantone | LU + UR + NW + OW | `defibrillatoren-luks-alle-kantone-DD-MM-YYYY.csv` |
+| Luzern | Nur LU | `defibrillatoren-luks-lu-DD-MM-YYYY.csv` |
+| Uri | Nur UR | `defibrillatoren-luks-ur-DD-MM-YYYY.csv` |
+| Nidwalden | Nur NW | `defibrillatoren-luks-nw-DD-MM-YYYY.csv` |
+| Obwalden | Nur OW | `defibrillatoren-luks-ow-DD-MM-YYYY.csv` |
 
-## Hosting
+Das CSV enthält zusätzlich eine `kanton`-Spalte (LU/UR/NW/OW).
+
+## 🏥 Partner
+
+Dieser Report wurde in Zusammenarbeit mit dem **Luzerner Kantonsspital (LUKS)** erstellt.
+
+## 🏥 Spezial-Zuordnungen (SPECIAL)
+
+Bekannte Institutionen werden direkt einer Gemeinde zugeordnet:
+
+- **Luzerner Kantonsspital / LUKS** → Luzern
+- **Kantonsspital Nidwalden** → Stans
+- **Kantonsspital Obwalden** → Sarnen
+- **Kantonsspital Uri** → Altdorf
+- **Verkehrsbetriebe Luzern (VBL)** → Luzern
+- **Zentralbahn** → Luzern
+- **Pilatus-Bahnen** → Kriens
+- **Rigi Bahnen** → Küssnacht am Rigi
+- **Titlisbahnen** → Engelberg
+
+## 🚀 Demo
+
+Live unter [stats.defikarte.ch/reports/defi_report_luks.html](https://stats.defikarte.ch/reports/defi_report_luks.html)
+
+## 🛠️ Technologie
+
+- **Vanilla JavaScript** — Keine Framework-Abhängigkeiten
+- **HTML5** — Single-File Application
+- **jsPDF + AutoTable** — PDF-Generierung im Browser
+- **jsDelivr CDN** — Datenbezug
+
+### Datenquellen
+
+```
+https://cdn.jsdelivr.net/gh/OpenBracketsCH/defi_data@main/data/json/defis_kt_lu.geojson
+https://cdn.jsdelivr.net/gh/OpenBracketsCH/defi_data@main/data/json/defis_kt_ur.geojson
+https://cdn.jsdelivr.net/gh/OpenBracketsCH/defi_data@main/data/json/defis_kt_nw.geojson
+https://cdn.jsdelivr.net/gh/OpenBracketsCH/defi_data@main/data/json/defis_kt_ow.geojson
+```
+
+## 📦 Installation
 
 ```bash
-# Lokal testen
-python3 -m http.server 8080
-# http://localhost:8080/defi_report_luks.html
+git clone https://github.com/OpenBracketsCH/defi_stats.git
+cd defi_stats
+python -m http.server 8000
+# → http://localhost:8000/reports/defi_report_luks.html
 ```
 
-> **Hinweis:** Beim direkten Öffnen als `file://` kann der GitHub-Datenabruf durch CORS blockiert werden.
+## 📊 CSV-Export
 
----
+Der CSV-Export enthält pro Defibrillator:
 
-## Datenquellen
+| Spalte | Inhalt |
+|--------|--------|
+| `gemeinde` | Zugeordnete Gemeinde |
+| `kanton` | LU, UR, NW oder OW |
+| `latitude` / `longitude` | GPS-Koordinaten |
+| `opening_hours` | z.B. "24/7" |
+| `access` | z.B. "yes", "private" |
+| `operator` | Betreiber |
+| `name` | Standortname |
+| `phone` | Telefonnummer |
+| `description` | Beschreibung |
+| `indoor` | Ja/Nein |
+| `level` | Stockwerk |
+| `note` | Bemerkungen |
+| `osm_id` | OpenStreetMap-ID |
 
-- **Repository:** [OpenBracketsCH/defi_data](https://github.com/OpenBracketsCH/defi_data)
-- **Dateien:** `defis_kt_lu.geojson`, `defis_kt_ur.geojson`, `defis_kt_nw.geojson`, `defis_kt_ow.geojson`
-- **Ursprung:** OpenStreetMap via Overpass API (täglich aktualisiert)
-- **Lizenz:** ODbL (OpenStreetMap-Daten)
+Das CSV enthält ein UTF-8 BOM für korrekte Darstellung in Excel.
 
----
+## 🔧 Gemeinde-Zuordnung
 
-## Gemeindezuordnung
+### Bereinigung von Gemeindenamen
 
-### Normalisierte Schreibvarianten
+Die `cleanGemeindeName()`-Funktion bereinigt automatisch störende Zusätze:
 
-| OSM-Wert | Gemeinde | Kanton |
-|---|---|---|
-| `Luzern LU`, `Lucerne`, `City of Lucerne` | Luzern | LU |
-| `Küssnacht`, `Küssnacht a. Rigi` | Küssnacht am Rigi | LU |
-| `Escholzmatt`, `Marbach` | Escholzmatt-Marbach | LU |
-| `Hergiswil LU` | Hergiswil bei Willisau | LU |
-| `Hergiswil NW` | Hergiswil | NW |
-| `Altdorf UR`, `Uri` | Altdorf | UR |
-| `Stans NW`, `Nidwalden` | Stans | NW |
-| `Sarnen OW`, `Obwalden` | Sarnen | OW |
-| `Flüeli`, `Ranft`, `Flüeli-Ranft` | Flüeli-Ranft | OW |
-| `Engelberg` | Engelberg | OW |
-
-> **Wichtig: Hergiswil** — Dieser Ortsname existiert zweimal: einmal als Gemeinde in NW (am Vierwaldstättersee) und einmal als Hergiswil bei Willisau in LU. Das `NORMALIZE`-Objekt unterscheidet beide über das Kantonskürzel im Tag.
-
-### Bekannte Institutionen
-
-| Operator | Gemeinde | Kanton |
-|---|---|---|
-| Luzerner Kantonsspital / LUKS | Luzern | LU |
-| Kantonsspital Nidwalden | Stans | NW |
-| Kantonsspital Obwalden | Sarnen | OW |
-| Kantonsspital Uri | Altdorf | UR |
-| Universität / Hochschule Luzern | Luzern | LU |
-| VBL (Verkehrsbetriebe Luzern) | Luzern | LU |
-| Zentralbahn | Luzern | LU |
-| Pilatus-Bahnen | Kriens | LU |
-| Rigi Bahnen | Küssnacht am Rigi | LU |
-| Titlisbahnen / Titlis | Engelberg | OW |
-
-### Neue Varianten nachpflegen
-
-```js
-const NORMALIZE = {
-  // bestehende Einträge ...
-  'neues-dorf lu': 'Neuenkirch',   // Schreibvariante
-  'ortsteil xyz':  'Luzern',       // Ortsteil
-};
+```
+"Malters / Hauswart"        → Malters
+"Sursee Ressort Soziales"   → Sursee
+"Stans; Abwart Müller"      → Stans
 ```
 
----
+### Mehrstufige Zuordnung
 
-## Kanton-Badges (Farbcodierung)
+1. `addr:city` bereinigen und gegen bekannte Gemeinden prüfen
+2. `operator` und `name` Felder auswerten (SPECIAL-Tabelle)
+3. GPS-Koordinaten als Fallback (nächste bekannte Gemeinde)
 
-| Kanton | Farbe |
-|---|---|
-| LU (Luzern) | Blau `#e8f0ff / #1a3a8a` |
-| UR (Uri) | Orange `#fff0e0 / #8a3a00` |
-| NW (Nidwalden) | Rot `#ffeaea / #8a1a1a` |
-| OW (Obwalden) | Grün `#f0ffe8 / #1a6a1a` |
+## 🎨 Design
 
----
+Dem offiziellen defikarte.ch Styleguide folgend:
 
-## Design
+- **Primärfarbe**: `#97C568` (Hellgrün)
+- **Sekundärfarbe**: `#144430` (Dunkelgrün)
+- **Schriftart**: Poppins
 
-Gemäss [defikarte.ch](https://defikarte.ch) Styleguide:
+## 📧 Kontakt
 
-| Element | Wert |
-|---|---|
-| Primärfarbe | `#97C568` (Hellgrün, Pantone 367 C/U) |
-| Sekundärfarbe | `#144430` (Dunkelgrün, Pantone 357 C/U) |
-| Schrift | Poppins (Google Fonts) |
+- **defikarte.ch**: [defikarte.ch](https://defikarte.ch)
+- **OpenBrackets CH**: [GitHub](https://github.com/OpenBracketsCH)
+- **LUKS**: [luks.ch](https://www.luks.ch)
 
----
+## 📝 Verwandte Projekte
 
-## Abhängigkeiten (CDN)
+- [Defikarte.ch Dashboard](https://stats.defikarte.ch) — Schweizweites Übersichts-Dashboard
+- [soH Report](https://stats.defikarte.ch/reports/defi_report_soh.html) — Kanton Solothurn
+- [defikarte.ch](https://defikarte.ch) — Karte aller Defibrillatoren in der Schweiz
 
-| Bibliothek | Version | Verwendung |
-|---|---|---|
-| [jsPDF](https://github.com/parallax/jsPDF) | 2.5.1 | PDF-Export |
-| [jsPDF-AutoTable](https://github.com/simonbengtsson/jsPDF-AutoTable) | 3.8.2 | Tabellen im PDF |
-| [Google Fonts – Poppins](https://fonts.google.com/specimen/Poppins) | — | Typografie |
+## 📄 Lizenz
 
----
-
-## Entwicklung
-
-Teil des [defikarte.ch](https://defikarte.ch) Ökosystems von [OpenBrackets](https://github.com/OpenBracketsCH).
-Entwickelt mit [Claude](https://claude.ai) (Anthropic).
+[MIT License](LICENSE) · Daten: [ODbL](https://opendatacommons.org/licenses/odbl/) via OpenStreetMap
