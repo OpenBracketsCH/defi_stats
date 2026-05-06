@@ -1,137 +1,128 @@
-# Defibrillatoren Basel-Stadt & Basel-Landschaft – Auswertung
+# Defi-Report Basel-Stadt & Basel-Landschaft
 
-Ein Reporting-Tool von [defikarte.ch](https://defikarte.ch) zur Auswertung der Defibrillator-Daten in beiden Basler Kantonen aus OpenStreetMap.
+Interaktiver Report zur Auswertung der Defibrillator-Daten in den Kantonen Basel-Stadt und Basel-Landschaft, basierend auf OpenStreetMap-Daten via [defikarte.ch](https://defikarte.ch).
 
----
+## 🎯 Über den Report
 
-## Inhalt
+Der BS/BL-Report zeigt eine detaillierte Übersicht aller erfassten Defibrillatoren in beiden Basler Kantonen, aufgeschlüsselt nach Gemeinden. Über Kanton-Tabs lassen sich BS und BL separat oder gemeinsam auswerten.
 
-| Datei | Beschreibung |
-|---|---|
-| `defi_report_bs_bl.html` | Standalone Web-App für BS + BL kombiniert |
+### Hauptfunktionen
 
----
+- **📊 Gemeindeübersicht**: Sortierbare Tabelle mit allen Gemeinden beider Kantone
+- **🗂️ Kanton-Tabs**: Filterung nach Basel-Stadt, Basel-Landschaft oder beide
+- **🕐 24/7 Verfügbarkeit**: Auswertung rund um die Uhr erreichbarer Defibrillatoren
+- **📄 PDF-Export**: Report des aktiven Tabs als PDF
+- **📊 CSV-Export**: Defibrillatoren des aktiven Tabs als CSV (1 Zeile pro Defi)
+- **🔍 Suchfunktion**: Schnelle Suche nach Gemeinden
 
-## Besonderheit: Zwei Kantone in einer App
+### Kennzahlen
 
-Die App lädt **beide GeoJSON-Dateien parallel** und stellt sie gemeinsam dar:
+- **Defibrillatoren total** (BS + BL)
+- **Basel-Stadt** und **Basel-Landschaft** separat
+- **24/7 erreichbare** Defibrillatoren
+- **Anzahl Gemeinden** mit mindestens einem Defibrillator
 
-| Kanton | GeoJSON-Datei |
-|---|---|
-| Basel-Stadt (BS) | `defis_kt_bs.geojson` |
-| Basel-Landschaft (BL) | `defis_kt_bl.geojson` |
+## 🗺️ Abgedeckte Gemeinden
 
-Über die **Tab-Navigation** kann zwischen drei Ansichten gewechselt werden:
+| Kanton | Gemeinden |
+|--------|-----------|
+| **Basel-Stadt (BS)** | 3 (Basel, Riehen, Bettingen) |
+| **Basel-Landschaft (BL)** | 73 |
+| **Total** | 76 |
 
-- **Beide Kantone** — alle Gemeinden zusammen, mit Kanton-Badge (BS / BL)
-- **Basel-Stadt** — nur die 3 Gemeinden Basel, Riehen, Bettingen
-- **Basel-Landschaft** — alle 86 BL-Gemeinden
+## 🗂️ Kanton-Tabs und CSV-Export
 
-Der **PDF-Export** berücksichtigt den aktiv gewählten Tab — es wird nur der sichtbare Ausschnitt exportiert.
+Der CSV-Export berücksichtigt den aktiven Tab:
 
----
+| Tab | CSV-Inhalt | Dateiname |
+|-----|-----------|-----------|
+| Alle | BS + BL | `defibrillatoren-bs-bl-DD-MM-YYYY.csv` |
+| Basel-Stadt | Nur BS | `defibrillatoren-bs-DD-MM-YYYY.csv` |
+| Basel-Landschaft | Nur BL | `defibrillatoren-bl-DD-MM-YYYY.csv` |
 
-## Hosting
+Das CSV enthält zusätzlich eine `kanton`-Spalte (BS/BL).
+
+## 🏥 Spezial-Zuordnungen (SPECIAL)
+
+Bekannte Institutionen werden direkt einer Gemeinde zugeordnet:
+
+- **Universitätsspital Basel / USB** → Basel
+- **Kinderspital beider Basel (UKBB)** → Basel
+- **Kantonsspital Baselland** → Liestal
+- **SBB** → Basel
+- **BVB / BLT** → Basel
+
+## 🚀 Demo
+
+Live unter [stats.defikarte.ch/reports/defi_report_bs_bl.html](https://stats.defikarte.ch/reports/defi_report_bs_bl.html)
+
+## 🛠️ Technologie
+
+- **Vanilla JavaScript** — Keine Framework-Abhängigkeiten
+- **HTML5** — Single-File Application
+- **jsPDF + AutoTable** — PDF-Generierung im Browser
+- **jsDelivr CDN / GitHub raw** — Datenbezug
+
+### Datenquellen
+
+```
+https://raw.githubusercontent.com/OpenBracketsCH/defi_data/main/data/json/defis_kt_bs.geojson
+https://raw.githubusercontent.com/OpenBracketsCH/defi_data/main/data/json/defis_kt_bl.geojson
+```
+
+## 📦 Installation
 
 ```bash
-# Lokal testen
-python3 -m http.server 8080
-# http://localhost:8080/defi_report_bs_bl.html
-
-# GitHub Pages, Netlify, Vercel – einfach die HTML-Datei deployen
+git clone https://github.com/OpenBracketsCH/defi_stats.git
+cd defi_stats
+python -m http.server 8000
+# → http://localhost:8000/reports/defi_report_bs_bl.html
 ```
 
-> **Hinweis:** Beim direkten Öffnen als `file://` kann der GitHub-Datenabruf durch CORS blockiert werden.
+## 📊 CSV-Export
 
----
+Der CSV-Export enthält pro Defibrillator:
 
-## Datenquellen
+| Spalte | Inhalt |
+|--------|--------|
+| `gemeinde` | Zugeordnete Gemeinde |
+| `kanton` | BS oder BL |
+| `latitude` / `longitude` | GPS-Koordinaten |
+| `opening_hours` | z.B. "24/7" |
+| `access` | z.B. "yes", "private" |
+| `operator` | Betreiber |
+| `name` | Standortname |
+| `phone` | Telefonnummer |
+| `description` | Beschreibung |
+| `indoor` | Ja/Nein |
+| `level` | Stockwerk |
+| `note` | Bemerkungen |
+| `osm_id` | OpenStreetMap-ID |
 
-- **Repository:** [OpenBracketsCH/defi_data](https://github.com/OpenBracketsCH/defi_data)
-- **Dateien:** `data/json/defis_kt_bs.geojson` und `data/json/defis_kt_bl.geojson`
-- **Ursprung:** OpenStreetMap via Overpass API (täglich aktualisiert durch GitHub Actions)
-- **Lizenz:** ODbL (OpenStreetMap-Daten)
+Das CSV enthält ein UTF-8 BOM für korrekte Darstellung in Excel.
 
----
+## 🔧 Gemeinde-Zuordnung
 
-## Gemeindezuordnung
+Mehrstufige Erkennung:
+1. `addr:city` bereinigen und gegen bekannte Gemeinden prüfen
+2. `operator` und `name` Felder auswerten (SPECIAL-Tabelle)
+3. GPS-Koordinaten als Fallback (nächste bekannte Gemeinde)
 
-### Basel-Stadt: Gemeinden
+## 🎨 Design
 
-Basel-Stadt besteht aus nur **3 Gemeinden**:
+Dem offiziellen defikarte.ch Styleguide folgend:
 
-| Gemeinde | Besonderheit |
-|---|---|
-| Basel | Stadtgemeinde mit 19 Stadtteilen |
-| Riehen | Gemeinde am Stadtrand |
-| Bettingen | Kleinste Einwohnergemeinde der Schweiz |
+- **Primärfarbe**: `#97C568` (Hellgrün)
+- **Sekundärfarbe**: `#144430` (Dunkelgrün)
+- **Schriftart**: Poppins
 
-### Normalisierte Schreibvarianten
+## 📝 Verwandte Projekte
 
-Da Basel viele Ortsteile hat, die in OSM als `addr:city` vorkommen, werden diese zusammengeführt:
+- [Defikarte.ch Dashboard](https://stats.defikarte.ch) — Schweizweites Übersichts-Dashboard
+- [LUKS Report](https://stats.defikarte.ch/reports/defi_report_luks.html) — LU/UR/NW/OW
+- [soH Report](https://stats.defikarte.ch/reports/defi_report_soh.html) — Kanton Solothurn
+- [defikarte.ch](https://defikarte.ch) — Karte aller Defibrillatoren in der Schweiz
 
-| OSM-Wert | Gemeinde |
-|---|---|
-| `Gundeldingen`, `Kleinbasel`, `St. Alban` | Basel |
-| `St. Johann`, `Iselin`, `Bachletten` | Basel |
-| `Klybeck`, `Matthäus`, `Hirzbrunnen` | Basel |
-| `Basel-Stadt`, `City of Basel`, `Basel BS` | Basel |
-| `Reinach BL`, `Aesch BL`, `Oberwil BL` | jeweilige BL-Gemeinde |
-| `Liestal BL` | Liestal |
+## 📄 Lizenz
 
-### Bekannte Institutionen
-
-| Operator | Gemeinde |
-|---|---|
-| Universitätsspital Basel / USB | Basel |
-| Universität Basel / Uni Basel | Basel |
-| Novartis AG | Basel |
-| F. Hoffmann-La Roche AG | Basel |
-| BVB (Basler Verkehrs-Betriebe) | Basel |
-| BLT (Baselland Transport AG) | Liestal |
-| Flughafen Basel-Mulhouse / EuroAirport | Basel |
-| Messe Basel | Basel |
-| Swiss TPH | Basel |
-
-### Neue Varianten nachpflegen
-
-Falls nach dem Laden Doppeleinträge auftauchen:
-
-```js
-const NORMALIZE = {
-  // bestehende Einträge ...
-  'neuer-ortsteil': 'Basel',   // z.B. weiterer Stadtteil
-  'neue bl gem. be': 'Reinach', // Schreibvariante
-};
-```
-
----
-
-## Design
-
-Das Tool folgt dem [defikarte.ch](https://defikarte.ch) Styleguide:
-
-| Element | Wert |
-|---|---|
-| Primärfarbe | `#97C568` (Hellgrün, Pantone 367 C/U) |
-| Sekundärfarbe | `#144430` (Dunkelgrün, Pantone 357 C/U) |
-| Schrift | Poppins (Google Fonts) |
-| BS-Badge | Blau `#dce8ff / #1a3a7a` |
-| BL-Badge | Orange `#fff0d0 / #7a4a00` |
-
----
-
-## Abhängigkeiten (CDN)
-
-| Bibliothek | Version | Verwendung |
-|---|---|---|
-| [jsPDF](https://github.com/parallax/jsPDF) | 2.5.1 | PDF-Export |
-| [jsPDF-AutoTable](https://github.com/simonbengtsson/jsPDF-AutoTable) | 3.8.2 | Tabellen im PDF |
-| [Google Fonts – Poppins](https://fonts.google.com/specimen/Poppins) | — | Typografie |
-
----
-
-## Entwicklung
-
-Teil des [defikarte.ch](https://defikarte.ch) Ökosystems von [OpenBrackets](https://github.com/OpenBracketsCH).
-Entwickelt mit [Claude](https://claude.ai) (Anthropic).
+[MIT License](LICENSE) · Daten: [ODbL](https://opendatacommons.org/licenses/odbl/) via OpenStreetMap

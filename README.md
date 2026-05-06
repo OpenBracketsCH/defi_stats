@@ -1,7 +1,5 @@
 # Defikarte.ch Dashboard
 
-<img src="https://defikarte.ch/defikarte-logo-quer-gruen-positiv-rgb.png" alt="defikarte.ch" style="width:400px;"/>
-
 Ein interaktives Dashboard zur Visualisierung und Analyse der Defibrillator-Datenqualität in der Schweiz.
 
 ## 🎯 Über das Projekt
@@ -30,7 +28,7 @@ Das Defikarte.ch Dashboard bietet eine umfassende Übersicht über die Qualität
 
 ## 🚀 Demo
 
-Besuchen Sie [stats.defikarte.ch](https://stats.defikarte.ch) für eine Live-Demo.
+Besuchen Sie [defikarte.ch/dashboard](https://defikarte.ch/dashboard) für eine Live-Demo.
 
 ## 🛠️ Technologie
 

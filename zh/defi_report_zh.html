@@ -435,6 +435,10 @@
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       PDF exportieren
     </button>
+    <button class="btn btn-outline" id="csv-btn" onclick="exportCSV()" disabled>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      CSV exportieren
+    </button>
   </div>
 
   <div class="table-card">
@@ -517,6 +521,8 @@ function extractGemeinde(props, lon, lat) {
   return closest(lon, lat);
 }
 
+let allFeatures = [];
+
 // ── Laden ──────────────────────────────────────────────────────────────────
 async function loadData() {
   const msg = document.getElementById('load-msg');
@@ -527,6 +533,7 @@ async function loadData() {
     if (!res.ok) throw new Error('HTTP ' + res.status);
     msg.textContent = 'Daten verarbeiten…';
     const geojson = await res.json();
+    allFeatures = geojson.features || [];
 
     const totals = {}, h24s = {};
     for (const f of geojson.features || []) {
@@ -551,6 +558,7 @@ async function loadData() {
     document.getElementById('s-gem').textContent   = rows.length;
     document.getElementById('last-updated').textContent = 'Geladen: ' + new Date().toLocaleString('de-CH');
     document.getElementById('pdf-btn').disabled = false;
+    document.getElementById('csv-btn').disabled = false;
     render();
   } catch(e) {
     msg.textContent = 'Fehler: ' + e.message;
@@ -693,6 +701,41 @@ function exportPDF() {
 }
 
 // Start
+
+function exportCSV() {
+  if (!allFeatures.length) return;
+  const cols = ['gemeinde','latitude','longitude','opening_hours','access','operator','name','phone','description','indoor','level','note','osm_id'];
+  const escape = v => {
+    if (v === null || v === undefined) return '';
+    const s = String(v).replace(/"/g, '""');
+    return (s.includes(',') || s.includes('"') || s.includes('\n')) ? `"${s}"` : s;
+  };
+  const csvRows = [cols.join(',')];
+  allFeatures.forEach(f => {
+    const p = f.properties || {};
+    const [lon, lat] = f.geometry?.coordinates || [0, 0];
+    const gemeinde = extractGemeinde(p, lon, lat);
+    csvRows.push([
+      escape(gemeinde),
+      escape(lat ? lat.toFixed(6) : ''),
+      escape(lon ? lon.toFixed(6) : ''),
+      escape(p.opening_hours), escape(p.access), escape(p.operator),
+      escape(p.name), escape(p.phone), escape(p.description),
+      escape(p.indoor), escape(p.level), escape(p.note),
+      escape(f.id || p['@id'] || '')
+    ].join(','));
+  });
+  const bom = '\uFEFF';
+  const blob = new Blob([bom + csvRows.join('\n')], {type: 'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const today = new Date().toLocaleDateString('de-CH').replace(/\./g, '-');
+  a.href = url;
+  a.download = `defibrillatoren-zh-${today}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 loadData();
 </script>
 </body>

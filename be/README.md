@@ -1,131 +1,117 @@
-# Defibrillatoren Kanton Bern – Auswertung
+# Defi-Report Kanton Bern
 
-Ein Reporting-Tool von [defikarte.ch](https://defikarte.ch) zur Auswertung der Defibrillator-Daten im Kanton Bern aus OpenStreetMap.
+Interaktiver Report zur Auswertung der Defibrillator-Daten im Kanton Bern, basierend auf OpenStreetMap-Daten via [defikarte.ch](https://defikarte.ch).
 
----
+## 🎯 Über den Report
 
-## Inhalt
+Der Bern-Report zeigt eine detaillierte Übersicht aller erfassten Defibrillatoren im Kanton Bern, aufgeschlüsselt nach Gemeinden. Er dient als Grundlage zur Verbesserung der Defibrillator-Infrastruktur und Datenqualität.
 
-| Datei | Beschreibung |
-|---|---|
-| `defi_report_be.html` | Standalone Web-App (kein Build-Schritt nötig) |
+### Hauptfunktionen
 
----
+- **📊 Gemeindeübersicht**: Sortierbare Tabelle mit allen Gemeinden des Kantons Bern
+- **🕐 24/7 Verfügbarkeit**: Auswertung rund um die Uhr erreichbarer Defibrillatoren
+- **📄 PDF-Export**: Report als PDF für Präsentationen und Berichte
+- **📊 CSV-Export**: Alle Defibrillatoren als CSV-Datei (1 Zeile pro Defi)
+- **🔍 Suchfunktion**: Schnelle Suche nach Gemeinden
+- **📱 Responsive Design**: Optimiert für Desktop und Mobile
 
-## Web-App (`defi_report_be.html`)
+### Kennzahlen
 
-### Features
+- **Defibrillatoren total** im Kanton Bern
+- **24/7 erreichbare** Defibrillatoren (absolut und prozentual)
+- **Anzahl Gemeinden** mit mindestens einem Defibrillator
 
-- **Automatischer Datenabruf** beim Öffnen direkt von [OpenBracketsCH/defi_data](https://github.com/OpenBracketsCH/defi_data) auf GitHub
-- **Kennzahlen-Übersicht**: Total Defibrillatoren, 24/7-Erreichbarkeit, Anteil 24/7, Anzahl Gemeinden
-- **Sortierbare Tabelle** nach Gemeinde, Anzahl total, Anzahl 24/7, Anteil 24/7
-- **Live-Suche** nach Gemeindename
-- **PDF-Export** direkt im Browser mit defikarte.ch-Branding
-- **Responsives Design** – funktioniert auf Desktop und Mobile
-- **Keine Abhängigkeiten** – eine einzige HTML-Datei, kein Server nötig
+## 🗺️ Abgedeckte Gemeinden
 
-### Hosting
+Der Report umfasst **182 Gemeinden** des Kantons Bern. Ortsteile und Varianten werden automatisch auf die korrekte Gemeinde gemappt.
+
+Einige Beispiele der Normalisierung:
+
+| OSM-Eintrag | Gemeinde |
+|-------------|----------|
+| Bern BE | Bern |
+| Köniz BE | Köniz |
+| Münsingen BE | Münsingen |
+
+## 🏥 Spezial-Zuordnungen (SPECIAL)
+
+Bekannte Institutionen werden direkt einer Gemeinde zugeordnet:
+
+- **Inselspital Bern / Universitätsspital Bern** → Bern
+- **Spital Thun** → Thun
+- **Spital Emmental** → Burgdorf
+- **Lindenhofspital** → Bern
+- **SBB** → Bern
+
+## 🚀 Demo
+
+Live unter [stats.defikarte.ch/reports/defi_report_be.html](https://stats.defikarte.ch/reports/defi_report_be.html)
+
+## 🛠️ Technologie
+
+- **Vanilla JavaScript** — Keine Framework-Abhängigkeiten
+- **HTML5** — Single-File Application
+- **jsPDF + AutoTable** — PDF-Generierung im Browser
+- **jsDelivr CDN / GitHub raw** — Datenbezug
+
+### Datenquelle
+
+```
+https://raw.githubusercontent.com/OpenBracketsCH/defi_data/main/data/json/defis_kt_be.geojson
+```
+
+## 📦 Installation
 
 ```bash
-# Lokal testen (empfohlen wegen CORS)
-python3 -m http.server 8080
-# Dann im Browser: http://localhost:8080/defi_report_be.html
-
-# GitHub Pages, Netlify, Vercel – einfach die HTML-Datei deployen
+git clone https://github.com/OpenBracketsCH/defi_stats.git
+cd defi_stats
+python -m http.server 8000
+# → http://localhost:8000/reports/defi_report_be.html
 ```
 
-> **Hinweis:** Beim direkten Öffnen als `file://` kann der GitHub-Datenabruf durch CORS blockiert werden. Ein lokaler Webserver löst das Problem.
+## 📊 CSV-Export
 
----
+Der CSV-Export enthält pro Defibrillator:
 
-## Datenquelle
+| Spalte | Inhalt |
+|--------|--------|
+| `gemeinde` | Zugeordnete Gemeinde |
+| `latitude` / `longitude` | GPS-Koordinaten |
+| `opening_hours` | z.B. "24/7" |
+| `access` | z.B. "yes", "private" |
+| `operator` | Betreiber |
+| `name` | Standortname |
+| `phone` | Telefonnummer |
+| `description` | Beschreibung |
+| `indoor` | Ja/Nein |
+| `level` | Stockwerk |
+| `note` | Bemerkungen |
+| `osm_id` | OpenStreetMap-ID |
 
-- **Repository:** [OpenBracketsCH/defi_data](https://github.com/OpenBracketsCH/defi_data)
-- **Datei:** `data/json/defis_kt_be.geojson`
-- **Ursprung:** OpenStreetMap via Overpass API (täglich aktualisiert durch GitHub Actions)
-- **Lizenz:** ODbL (OpenStreetMap-Daten)
+Das CSV enthält ein UTF-8 BOM für korrekte Darstellung in Excel.
 
----
+## 🔧 Gemeinde-Zuordnung
 
-## Gemeindezuordnung
+Mehrstufige Erkennung:
+1. `addr:city` bereinigen (Suffixe wie "/ Hauswart", "Ressort..." entfernen) und gegen bekannte Gemeinden prüfen
+2. `operator` und `name` Felder auswerten (SPECIAL-Tabelle)
+3. GPS-Koordinaten als Fallback (nächste bekannte Gemeinde)
 
-Da viele OSM-Einträge keine `addr:city`-Tags haben, erfolgt die Zuordnung mehrstufig:
+## 🎨 Design
 
-### Stufen
+Dem offiziellen defikarte.ch Styleguide folgend:
 
-| Priorität | Methode | Beispiel |
-|---|---|---|
-| 1 | OSM-Tags (`addr:city`, `addr:municipality`, …) | `addr:city=Bern` → Bern |
-| 2 | Normalisierung (Schreibvarianten, Ortsteile) | `Biel` → Biel/Bienne |
-| 3 | `operator`-Feld mit Gemeinde-Präfix | `Gemeinde Köniz` → Köniz |
-| 4 | Bekannte Institutionen | `Inselspital Bern` → Bern |
-| 5 | Koordinaten-Fallback | nächste Gemeinde per Distanz |
+- **Primärfarbe**: `#97C568` (Hellgrün)
+- **Sekundärfarbe**: `#144430` (Dunkelgrün)
+- **Schriftart**: Poppins
 
-### Normalisierte Schreibvarianten
+## 📝 Verwandte Projekte
 
-| OSM-Wert | Gemeinde |
-|---|---|
-| `Biel` / `Bienne` | Biel/Bienne |
-| `bern` (Kleinschreibung) | Bern |
-| `Bern BE` | Bern |
-| `Thun BE` | Thun |
-| `Wengen` | Lauterbrunnen |
-| `Mürren` | Lauterbrunnen |
-| `Gstaad` | Saanen |
-| `Gwatt` | Thun |
+- [Defikarte.ch Dashboard](https://stats.defikarte.ch) — Schweizweites Übersichts-Dashboard
+- [LUKS Report](https://stats.defikarte.ch/reports/defi_report_luks.html) — LU/UR/NW/OW
+- [soH Report](https://stats.defikarte.ch/reports/defi_report_soh.html) — Kanton Solothurn
+- [defikarte.ch](https://defikarte.ch) — Karte aller Defibrillatoren in der Schweiz
 
-### Bekannte Institutionen
+## 📄 Lizenz
 
-| Operator | Gemeinde |
-|---|---|
-| Inselspital Bern | Bern |
-| Universitätsspital Bern | Bern |
-| Universität Bern | Bern |
-| Berner Fachhochschule | Bern |
-| BernMobil | Bern |
-| Flughafen Bern AG / Airport Bern | Belp |
-| SBB | Bern |
-| PostAuto Schweiz AG | Bern |
-
-### Neue Varianten nachpflegen
-
-Falls nach dem Laden unerwartete Doppeleinträge oder unbekannte Ortsnamen auftauchen:
-
-1. In der Tabelle nach auffälligen Einträgen suchen (z.B. `Bern-Bümpliz`, `Biel` neben `Biel/Bienne`)
-2. Im `NORMALIZE`-Objekt im `<script>`-Block ergänzen:
-```js
-const NORMALIZE = {
-  // bestehende Einträge ...
-  'bern-bümpliz': 'Bern',   // Ortsteil
-  'kehrsatz': 'Kehrsatz',   // ggf. Schreibkorrektur
-};
-```
-
----
-
-## Design
-
-Das Tool folgt dem [defikarte.ch](https://defikarte.ch) Styleguide:
-
-| Element | Wert |
-|---|---|
-| Primärfarbe | `#97C568` (Hellgrün, Pantone 367 C/U) |
-| Sekundärfarbe | `#144430` (Dunkelgrün, Pantone 357 C/U) |
-| Schrift | Poppins (Google Fonts) |
-
----
-
-## Abhängigkeiten (CDN, keine Installation)
-
-| Bibliothek | Version | Verwendung |
-|---|---|---|
-| [jsPDF](https://github.com/parallax/jsPDF) | 2.5.1 | PDF-Export |
-| [jsPDF-AutoTable](https://github.com/simonbengtsson/jsPDF-AutoTable) | 3.8.2 | Tabellen im PDF |
-| [Google Fonts – Poppins](https://fonts.google.com/specimen/Poppins) | — | Typografie |
-
----
-
-## Entwicklung
-
-Teil des [defikarte.ch](https://defikarte.ch) Ökosystems von [OpenBrackets](https://github.com/OpenBracketsCH).
-Entwickelt mit [Claude](https://claude.ai) (Anthropic).
+[MIT License](LICENSE) · Daten: [ODbL](https://opendatacommons.org/licenses/odbl/) via OpenStreetMap
